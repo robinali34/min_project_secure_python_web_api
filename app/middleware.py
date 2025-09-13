@@ -55,9 +55,7 @@ class SecurityMiddleware(BaseHTTPMiddleware):
                         log_security_event(
                             db=db,
                             event_type="unexpected_error",
-                            event_data=(
-                                f"error={str(e)}, path={request.url.path}"
-                            ),
+                            event_data=(f"error={str(e)}, path={request.url.path}"),
                             severity="ERROR",
                             request=request,
                         )
@@ -117,8 +115,7 @@ class SecurityMiddleware(BaseHTTPMiddleware):
                         db=db,
                         event_type="slow_request",
                         event_data=(
-                            f"path={request.url.path}, "
-                            f"time={process_time: .2f}s"
+                            f"path={request.url.path}, " f"time={process_time: .2f}s"
                         ),
                         severity="WARNING",
                         request=request,
@@ -151,9 +148,7 @@ class SecurityMiddleware(BaseHTTPMiddleware):
 class RateLimitMiddleware(BaseHTTPMiddleware):
     """Rate limiting middleware."""
 
-    async def dispatch(
-        self, request: Request, call_next: Callable
-    ) -> Response:
+    async def dispatch(self, request: Request, call_next: Callable) -> Response:
         # Apply rate limiting
         try:
             # This is a simplified rate limiting implementation

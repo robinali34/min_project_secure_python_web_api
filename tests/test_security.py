@@ -12,9 +12,7 @@ def test_user(db_session):
     user = User(
         username="testuser",
         email="test@example.com",
-        hashed_password=get_password_hash(
-            "TestPass123!"
-        ),  # pragma: allowlist secret
+        hashed_password=get_password_hash("TestPass123!"),  # pragma: allowlist secret
         is_active=True,
         is_verified=True,
     )
@@ -27,9 +25,7 @@ def test_user(db_session):
 @pytest.fixture
 def auth_headers(test_user):
     """Create authentication headers."""
-    token = create_access_token(
-        {"sub": test_user.username, "user_id": test_user.id}
-    )
+    token = create_access_token({"sub": test_user.username, "user_id": test_user.id})
     return {"Authorization": f"Bearer {token}"}
 
 
@@ -90,9 +86,7 @@ class TestAuthentication:
         response = client.get("/users/me")
         assert response.status_code == 403
 
-    def test_protected_endpoint_with_token(
-        self, auth_headers, db_session, client
-    ):
+    def test_protected_endpoint_with_token(self, auth_headers, db_session, client):
         """Test accessing protected endpoint with valid token."""
         response = client.get("/users/me", headers=auth_headers)
         assert response.status_code == 200
@@ -183,9 +177,7 @@ class TestPasswordSecurity:
         ]
 
         for password in weak_passwords:
-            is_valid, issues = SecurityValidator.validate_password_strength(
-                password
-            )
+            is_valid, issues = SecurityValidator.validate_password_strength(password)
             assert not is_valid
             assert len(issues) > 0
 
@@ -200,9 +192,7 @@ class TestPasswordSecurity:
         ]
 
         for password in strong_passwords:
-            is_valid, issues = SecurityValidator.validate_password_strength(
-                password
-            )
+            is_valid, issues = SecurityValidator.validate_password_strength(password)
             assert is_valid
             assert len(issues) == 0
 

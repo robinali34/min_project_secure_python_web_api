@@ -60,6 +60,4 @@ def set_sqlite_pragma(dbapi_connection: Any, connection_record: Any) -> None:
             cursor.execute("SET lock_timeout = '10s'")
             cursor.execute("SET idle_in_transaction_session_timeout = '60s'")
             cursor.execute("SET row_security = on")
-            cursor.execute(
-                "SET default_transaction_isolation = 'read committed'"
-            )
+            cursor.execute("SET default_transaction_isolation = 'read committed'")

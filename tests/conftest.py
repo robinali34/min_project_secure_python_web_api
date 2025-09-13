@@ -24,13 +24,11 @@ temp_dir = tempfile.mkdtemp()
 def create_test_database():
     test_db_name = f"test_{uuid.uuid4().hex[:8]}.db"
     test_db_path = os.path.join(temp_dir, test_db_name)
-    SQLALCHEMY_DATABASE_URL = f"sqlite:///{test_db_path}"
+    SQLALCHEMY_DATABASE_URL = f"sqlite:///{test_db_path}"  # noqa: E231
     engine = create_engine(
         SQLALCHEMY_DATABASE_URL, connect_args={"check_same_thread": False}
     )
-    TestingSessionLocal = sessionmaker(
-        autocommit=False, autoflush=False, bind=engine
-    )
+    TestingSessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
     return engine, TestingSessionLocal, test_db_path
 
 
@@ -113,9 +111,7 @@ def auth_headers(test_user):
     """Create authentication headers."""
     from app.security import create_access_token
 
-    token = create_access_token(
-        {"sub": test_user.username, "user_id": test_user.id}
-    )
+    token = create_access_token({"sub": test_user.username, "user_id": test_user.id})
     return {"Authorization": f"Bearer {token}"}
 
 
@@ -139,7 +135,5 @@ def superuser_headers(db_session):
     db_session.commit()
     db_session.refresh(superuser)
 
-    token = create_access_token(
-        {"sub": superuser.username, "user_id": superuser.id}
-    )
+    token = create_access_token({"sub": superuser.username, "user_id": superuser.id})
     return {"Authorization": f"Bearer {token}"}

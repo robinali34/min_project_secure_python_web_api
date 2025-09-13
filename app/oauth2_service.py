@@ -62,9 +62,7 @@ class OAuth2TokenManager:
 
         if existing_token:
             # Update existing token
-            existing_token.access_token = self._encrypt_token(
-                token_data.access_token
-            )
+            existing_token.access_token = self._encrypt_token(token_data.access_token)
             if token_data.refresh_token:
                 existing_token.refresh_token = self._encrypt_token(
                     token_data.refresh_token
@@ -84,7 +82,7 @@ class OAuth2TokenManager:
                 event_type="oauth2_token_updated",
                 user_id=user_id,
                 event_data=(
-                    f"service={token_data.service_name}, scope={token_data.scope}"
+                    f"service={token_data.service_name}, " f"scope={token_data.scope}"
                 ),
                 severity="INFO",
                 request=request,
@@ -118,7 +116,7 @@ class OAuth2TokenManager:
                 event_type="oauth2_token_created",
                 user_id=user_id,
                 event_data=(
-                    f"service={token_data.service_name}, scope={token_data.scope}"
+                    f"service={token_data.service_name}, " f"scope={token_data.scope}"
                 ),
                 severity="INFO",
                 request=request,
@@ -279,7 +277,7 @@ OAUTH2_SERVICES = {
         "authorization_url": (
             "https://login.microsoftonline.com/common/oauth2/v2.0/authorize"
         ),
-        "token_url": "https://login.microsoftonline.com/common/oauth2/v2.0/token",
+        "token_url": ("https://login.microsoftonline.com/common/oauth2/v2.0/token"),
         "scope": "openid profile email",
         "redirect_uri": "http://localhost:8000/oauth/callback/microsoft",
     },
@@ -333,5 +331,6 @@ def validate_scope(scope: str, service_name: str) -> bool:
     if scope in OAUTH2_SCOPES:
         return True
 
-    # For now, accept any scope (in production, you'd validate against service-specific scopes)
+    # For now, accept any scope (in production, you'd validate against
+    # service-specific scopes)
     return True
