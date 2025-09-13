@@ -17,7 +17,7 @@
         "account": "",
         "local_database_path": null,
         "safety_version": "3.6.1",
-        "timestamp": "2025-09-12 20:27:25",
+        "timestamp": "2025-09-12 21:18:33",
         "packages_found": 24,
         "vulnerabilities_found": 8,
         "vulnerabilities_ignored": 0,
@@ -42,7 +42,7 @@
         "git": {
             "branch": "main",
             "tag": "",
-            "commit": "0c4b7b9a61fc55ff7e5790e7071c7611bae8a549",
+            "commit": "0561f66819523bbefc44ab51e406a755e16ef34c",
             "dirty": "True",
             "origin": "git@github.com:robinali34/min_project_secure_python_web_api.git"
         },

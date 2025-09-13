@@ -17,11 +17,7 @@ from app.oauth2_service import (
     get_oauth2_service_config,
     validate_scope,
 )
-from app.schemas import (
-    OAuth2TokenCreate,
-    OAuth2TokenResponse,
-    OAuth2TokenUpdate,
-)
+from app.schemas import OAuth2TokenCreate, OAuth2TokenResponse, OAuth2TokenUpdate
 from app.security import log_security_event
 
 router = APIRouter(prefix="/oauth", tags=["oauth2-web"])

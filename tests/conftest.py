@@ -113,3 +113,25 @@ def auth_headers(test_user):
 
     token = create_access_token({"sub": test_user.username, "user_id": test_user.id})
     return {"Authorization": f"Bearer {token}"}
+
+
+@pytest.fixture
+def superuser_headers(db_session):
+    """Create superuser authentication headers."""
+    from app.security import create_access_token
+    
+    # Create a superuser
+    superuser = User(
+        username="superuser",
+        email="superuser@example.com",
+        hashed_password="$2b$12$LQv3c1yqBWVHxkd0LHAkCOYz6TtxMQJqhN8/LewdBPj4JdGJ8.5K2",  # "testpassword123"
+        is_active=True,
+        is_superuser=True,
+        is_verified=True,
+    )
+    db_session.add(superuser)
+    db_session.commit()
+    db_session.refresh(superuser)
+    
+    token = create_access_token({"sub": superuser.username, "user_id": superuser.id})
+    return {"Authorization": f"Bearer {token}"}
