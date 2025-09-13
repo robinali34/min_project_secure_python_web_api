@@ -27,7 +27,7 @@ git clone <repository-url>
 cd secure_python_web_api
 python -m venv venv
 source venv/bin/activate
-pip install -r requirements.txt
+pip install -r requirements/requirements.txt
 
 # Run locally
 uvicorn app.main:app --reload
@@ -80,7 +80,7 @@ black . && isort . && black --check . && isort --check-only . && flake8 app/ tes
 
 3. **Install dependencies**
    ```bash
-   pip install -r requirements.txt
+   pip install -r requirements/requirements.txt
    pip install -r requirements-dev.txt
    ```
 
