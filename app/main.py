@@ -68,7 +68,9 @@ app = FastAPI(
     version="1.0.0",
     docs_url="/docs" if settings.environment == "development" else None,
     redoc_url="/redoc" if settings.environment == "development" else None,
-    openapi_url="/openapi.json" if settings.environment == "development" else None,
+    openapi_url="/openapi.json"
+    if settings.environment == "development"
+    else None,
     lifespan=lifespan,
 )
 
@@ -86,7 +88,9 @@ app.add_exception_handler(RateLimitExceeded, _rate_limit_exceeded_handler)
 
 # Global exception handlers
 @app.exception_handler(HTTPException)
-async def http_exception_handler(request: Request, exc: HTTPException) -> JSONResponse:
+async def http_exception_handler(
+    request: Request, exc: HTTPException
+) -> JSONResponse:
     """Handle HTTP exceptions."""
     logger.warning(
         "HTTP exception",
@@ -97,11 +101,15 @@ async def http_exception_handler(request: Request, exc: HTTPException) -> JSONRe
         client_ip=get_remote_address(request),
     )
 
-    return JSONResponse(status_code=exc.status_code, content={"detail": exc.detail})
+    return JSONResponse(
+        status_code=exc.status_code, content={"detail": exc.detail}
+    )
 
 
 @app.exception_handler(Exception)
-async def general_exception_handler(request: Request, exc: Exception) -> JSONResponse:
+async def general_exception_handler(
+    request: Request, exc: Exception
+) -> JSONResponse:
     """Handle general exceptions."""
     logger.error(
         "Unhandled exception",
@@ -136,7 +144,9 @@ async def root() -> Dict[str, str]:
     return {
         "message": "Secure Python Web API",
         "version": "1.0.0",
-        "docs": "/docs" if settings.environment == "development" else "disabled",
+        "docs": "/docs"
+        if settings.environment == "development"
+        else "disabled",
     }
 
 

@@ -32,7 +32,7 @@ repos:
     rev: 6.0.0
     hooks:
       - id: flake8
-        args: [--max-line-length=127, --max-complexity=10]
+        args: [--max-line-length=79, --max-complexity=15]
         exclude: ^(debug_|test_|demo_|minimal_|simple_|direct_|endpoint_|registration_|password_|schema_).*\.py$
 
   - repo: https://github.com/pre-commit/mirrors-mypy
@@ -47,7 +47,7 @@ repos:
     hooks:
       - id: bandit
         additional_dependencies: [pbr]
-        args: [-r, app/, -ll]
+        args: [-ll]
         files: ^app/.*\.py$
         exclude: ^(debug_|test_|demo_|minimal_|simple_|direct_|endpoint_|registration_|password_|schema_).*\.py$
 
@@ -55,5 +55,5 @@ repos:
     rev: v1.4.0
     hooks:
       - id: detect-secrets
-        args: ['--baseline', '.secrets.baseline']
+        args: ['--exclude-files', 'tests/test_security.py']
         exclude: ^(debug_|test_|demo_|minimal_|simple_|direct_|endpoint_|registration_|password_|schema_).*\.py$

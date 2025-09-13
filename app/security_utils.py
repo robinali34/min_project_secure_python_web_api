@@ -18,7 +18,9 @@ class SecurityValidator:
             return False
 
         # Basic email regex (RFC 5322 compliant)
-        email_regex = re.compile(r"^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$")
+        email_regex = re.compile(
+            r"^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$"
+        )
         return bool(email_regex.match(email))
 
     @staticmethod
@@ -43,16 +45,22 @@ class SecurityValidator:
             issues.append("Password must be no more than 128 characters long")
 
         if not any(c.isupper() for c in password):
-            issues.append("Password must contain at least one uppercase letter")
+            issues.append(
+                "Password must contain at least one uppercase letter"
+            )
 
         if not any(c.islower() for c in password):
-            issues.append("Password must contain at least one lowercase letter")
+            issues.append(
+                "Password must contain at least one lowercase letter"
+            )
 
         if not any(c.isdigit() for c in password):
             issues.append("Password must contain at least one digit")
 
         if not any(c in "!@#$%^&*()_+-=[]{}|;:,.<>?" for c in password):
-            issues.append("Password must contain at least one special character")
+            issues.append(
+                "Password must contain at least one special character"
+            )
 
         # Check for common weak patterns (exact matches only)
         weak_patterns = [
@@ -166,7 +174,9 @@ class RateLimiter:
         # Clean old entries
         if key in self.requests:
             self.requests[key] = [
-                req_time for req_time in self.requests[key] if req_time > window_start
+                req_time
+                for req_time in self.requests[key]
+                if req_time > window_start
             ]
         else:
             self.requests[key] = []
@@ -211,7 +221,9 @@ class InputValidator:
 
     @staticmethod
     def validate_numeric_range(
-        value: Union[int, float], min_value: float = None, max_value: float = None
+        value: Union[int, float],
+        min_value: float = None,
+        max_value: float = None,
     ) -> None:
         """Validate numeric range."""
         if min_value is not None and value < min_value:

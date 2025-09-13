@@ -33,7 +33,11 @@ class OAuth2TokenManager:
         return self.cipher.decrypt(encrypted_token.encode()).decode()
 
     def store_token(
-        self, db: Session, user_id: int, token_data: OAuth2TokenCreate, request=None
+        self,
+        db: Session,
+        user_id: int,
+        token_data: OAuth2TokenCreate,
+        request=None,
     ) -> OAuth2Token:
         """Store an OAuth2 token for a user."""
         # Check if token already exists for this user and service
@@ -58,7 +62,9 @@ class OAuth2TokenManager:
 
         if existing_token:
             # Update existing token
-            existing_token.access_token = self._encrypt_token(token_data.access_token)
+            existing_token.access_token = self._encrypt_token(
+                token_data.access_token
+            )
             if token_data.refresh_token:
                 existing_token.refresh_token = self._encrypt_token(
                     token_data.refresh_token
@@ -117,7 +123,11 @@ class OAuth2TokenManager:
             return new_token
 
     def get_token(
-        self, db: Session, user_id: int, service_name: str, scope: Optional[str] = None
+        self,
+        db: Session,
+        user_id: int,
+        service_name: str,
+        scope: Optional[str] = None,
     ) -> Optional[OAuth2Token]:
         """Get an active OAuth2 token for a user and service."""
         query = db.query(OAuth2Token).filter(
@@ -152,7 +162,11 @@ class OAuth2TokenManager:
         return None
 
     def get_decrypted_token(
-        self, db: Session, user_id: int, service_name: str, scope: Optional[str] = None
+        self,
+        db: Session,
+        user_id: int,
+        service_name: str,
+        scope: Optional[str] = None,
     ) -> Optional[str]:
         """Get a decrypted access token."""
         token = self.get_token(db, user_id, service_name, scope)
@@ -210,7 +224,12 @@ class OAuth2TokenManager:
         now = datetime.now(timezone.utc)
         expired_tokens = (
             db.query(OAuth2Token)
-            .filter(and_(OAuth2Token.expires_at < now, OAuth2Token.is_active.is_(True)))
+            .filter(
+                and_(
+                    OAuth2Token.expires_at < now,
+                    OAuth2Token.is_active.is_(True),
+                )
+            )
             .all()
         )
 
@@ -268,7 +287,12 @@ OAUTH2_SCOPES = {
     },
     "profile": {
         "description": "Access to user profile information",
-        "permissions": ["read:user", "read:profile", "read:email", "read:avatar"],
+        "permissions": [
+            "read:user",
+            "read:profile",
+            "read:email",
+            "read:avatar",
+        ],
     },
     "full": {
         "description": "Full access to user account",

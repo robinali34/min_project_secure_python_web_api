@@ -31,7 +31,10 @@ async def get_current_user(
     token_data = verify_token(credentials.credentials)
     if token_data is None:
         log_security_event(
-            db=db, event_type="invalid_token", severity="WARNING", request=request
+            db=db,
+            event_type="invalid_token",
+            severity="WARNING",
+            request=request,
         )
         raise credentials_exception
 
@@ -67,7 +70,8 @@ async def get_current_user(
             request=request,
         )
         raise HTTPException(
-            status_code=status.HTTP_423_LOCKED, detail="Account is temporarily locked"
+            status_code=status.HTTP_423_LOCKED,
+            detail="Account is temporarily locked",
         )
 
     return {
@@ -111,7 +115,8 @@ async def get_current_superuser(
     """Get current superuser."""
     if not current_user["is_superuser"]:
         raise HTTPException(
-            status_code=status.HTTP_403_FORBIDDEN, detail="Not enough permissions"
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail="Not enough permissions",
         )
     return current_user
 
@@ -119,12 +124,15 @@ async def get_current_superuser(
 def require_permissions(required_permissions: list):
     """Decorator to require specific permissions."""
 
-    def permission_checker(current_user: dict = Depends(get_current_active_user)):
+    def permission_checker(
+        current_user: dict = Depends(get_current_active_user),
+    ):
         # This is a simplified permission system
         # In a real application, you'd have a more complex permission system
         if not current_user["is_superuser"]:
             raise HTTPException(
-                status_code=status.HTTP_403_FORBIDDEN, detail="Not enough permissions"
+                status_code=status.HTTP_403_FORBIDDEN,
+                detail="Not enough permissions",
             )
         return current_user
 

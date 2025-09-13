@@ -245,7 +245,7 @@ Create a `.env` file with the following variables:
 
 ```env
 # Database
-DATABASE_URL=postgresql://user:password@localhost/dbname
+DATABASE_URL=postgresql://user:password@localhost/dbname  # pragma: allowlist secret
 
 # Security
 SECRET_KEY=your-secret-key-here

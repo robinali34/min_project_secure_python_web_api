@@ -44,7 +44,10 @@ async def get_security_events(
 
     # Order by most recent first
     events = (
-        query.order_by(desc(SecurityEvent.created_at)).offset(skip).limit(limit).all()
+        query.order_by(desc(SecurityEvent.created_at))
+        .offset(skip)
+        .limit(limit)
+        .all()
     )
 
     return events
@@ -62,7 +65,8 @@ async def get_security_stats(
     # Count events by type
     event_types = (
         db.query(
-            SecurityEvent.event_type, db.func.count(SecurityEvent.id).label("count")
+            SecurityEvent.event_type,
+            db.func.count(SecurityEvent.id).label("count"),
         )
         .filter(SecurityEvent.created_at >= since)
         .group_by(SecurityEvent.event_type)
@@ -71,7 +75,10 @@ async def get_security_stats(
 
     # Count events by severity
     severities = (
-        db.query(SecurityEvent.severity, db.func.count(SecurityEvent.id).label("count"))
+        db.query(
+            SecurityEvent.severity,
+            db.func.count(SecurityEvent.id).label("count"),
+        )
         .filter(SecurityEvent.created_at >= since)
         .group_by(SecurityEvent.severity)
         .all()
@@ -79,12 +86,16 @@ async def get_security_stats(
 
     # Count total events
     total_events = (
-        db.query(SecurityEvent).filter(SecurityEvent.created_at >= since).count()
+        db.query(SecurityEvent)
+        .filter(SecurityEvent.created_at >= since)
+        .count()
     )
 
     return {
         "total_events": total_events,
-        "event_types": {event_type: count for event_type, count in event_types},
+        "event_types": {
+            event_type: count for event_type, count in event_types
+        },
         "severities": {severity: count for severity, count in severities},
         "time_range_hours": hours,
     }
@@ -114,13 +125,16 @@ async def create_security_event(
 
 @router.get("/tokens/active")
 async def get_active_tokens(
-    db: Session = Depends(get_db), current_user: dict = Depends(get_current_superuser)
+    db: Session = Depends(get_db),
+    current_user: dict = Depends(get_current_superuser),
 ):
     """Get active refresh tokens (superuser only)."""
     now = datetime.now(timezone.utc)
     active_tokens = (
         db.query(RefreshToken)
-        .filter(RefreshToken.expires_at > now, RefreshToken.is_revoked.is_(False))
+        .filter(
+            RefreshToken.expires_at > now, RefreshToken.is_revoked.is_(False)
+        )
         .all()
     )
 
@@ -163,7 +177,8 @@ async def cleanup_tokens(
 
 @router.get("/health")
 async def security_health_check(
-    db: Session = Depends(get_db), current_user: dict = Depends(get_current_user)
+    db: Session = Depends(get_db),
+    current_user: dict = Depends(get_current_user),
 ):
     """Security health check endpoint."""
     # Check for recent security events
@@ -179,7 +194,9 @@ async def security_health_check(
 
     # Check for locked users
     locked_users = (
-        db.query(User).filter(User.locked_until > datetime.now(timezone.utc)).count()
+        db.query(User)
+        .filter(User.locked_until > datetime.now(timezone.utc))
+        .count()
     )
 
     # Check for failed login attempts in the last hour

@@ -26,7 +26,9 @@ router = APIRouter(prefix="/auth", tags=["authentication"])
 
 
 @router.post(
-    "/register", response_model=UserResponse, status_code=status.HTTP_201_CREATED
+    "/register",
+    response_model=UserResponse,
+    status_code=status.HTTP_201_CREATED,
 )
 async def register(
     request: Request, user_data: UserCreate, db: Session = Depends(get_db)
@@ -56,7 +58,8 @@ async def register(
             request=request,
         )
         raise HTTPException(
-            status_code=status.HTTP_400_BAD_REQUEST, detail="Email already registered"
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="Email already registered",
         )
 
     # Create new user
@@ -139,7 +142,9 @@ async def login(
     reset_failed_login_attempts(db, user)
 
     # Create tokens
-    access_token_expires = timedelta(minutes=settings.access_token_expire_minutes)
+    access_token_expires = timedelta(
+        minutes=settings.access_token_expire_minutes
+    )
     access_token = create_access_token(
         data={"sub": user.username, "user_id": user.id},
         expires_delta=access_token_expires,
@@ -179,7 +184,8 @@ async def refresh_token(
             request=request,
         )
         raise HTTPException(
-            status_code=status.HTTP_401_UNAUTHORIZED, detail="Invalid refresh token"
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Invalid refresh token",
         )
 
     user = get_user_by_id(db, token_data.user_id)
@@ -192,11 +198,14 @@ async def refresh_token(
             request=request,
         )
         raise HTTPException(
-            status_code=status.HTTP_401_UNAUTHORIZED, detail="Invalid refresh token"
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Invalid refresh token",
         )
 
     # Create new access token
-    access_token_expires = timedelta(minutes=settings.access_token_expire_minutes)
+    access_token_expires = timedelta(
+        minutes=settings.access_token_expire_minutes
+    )
     access_token = create_access_token(
         data={"sub": user.username, "user_id": user.id},
         expires_delta=access_token_expires,
@@ -218,7 +227,9 @@ async def refresh_token(
 
 
 @router.post("/logout")
-async def logout(request: Request, refresh_token: str, db: Session = Depends(get_db)):
+async def logout(
+    request: Request, refresh_token: str, db: Session = Depends(get_db)
+):
     """Logout user by revoking refresh token."""
     success = revoke_refresh_token(db, refresh_token)
 
@@ -243,7 +254,9 @@ async def change_password(
 
     # Verify current password
     user = db.query(User).filter(User.id == current_user["id"]).first()
-    if not verify_password(password_data.current_password, user.hashed_password):
+    if not verify_password(
+        password_data.current_password, user.hashed_password
+    ):
         log_security_event(
             db=db,
             event_type="password_change_wrong_current",

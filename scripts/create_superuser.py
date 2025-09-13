@@ -6,12 +6,9 @@ import sys
 
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
-from sqlalchemy.orm import Session
-
-from app.config import settings
-from app.database import SessionLocal, engine
-from app.models import Base, User
-from app.security import get_password_hash
+from app.database import SessionLocal, engine  # noqa: E402
+from app.models import Base, User  # noqa: E402
+from app.security import get_password_hash  # noqa: E402
 
 
 def create_superuser():
@@ -22,7 +19,9 @@ def create_superuser():
     db = SessionLocal()
     try:
         # Check if superuser already exists
-        existing_superuser = db.query(User).filter(User.is_superuser == True).first()
+        existing_superuser = (
+            db.query(User).filter(User.is_superuser.is_(True)).first()
+        )
         if existing_superuser:
             print(f"Superuser already exists: {existing_superuser.username}")
             return
@@ -39,7 +38,9 @@ def create_superuser():
         # Validate password strength
         from app.security_utils import SecurityValidator
 
-        is_valid, issues = SecurityValidator.validate_password_strength(password)
+        is_valid, issues = SecurityValidator.validate_password_strength(
+            password
+        )
         if not is_valid:
             print("❌ Password does not meet security requirements:")
             for issue in issues:

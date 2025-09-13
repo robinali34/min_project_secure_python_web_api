@@ -12,7 +12,9 @@ def test_user(db_session):
     user = User(
         username="testuser",
         email="test@example.com",
-        hashed_password=get_password_hash("TestPass123!"),
+        hashed_password=get_password_hash(
+            "TestPass123!"
+        ),  # pragma: allowlist secret
         is_active=True,
         is_verified=True,
     )
@@ -25,7 +27,9 @@ def test_user(db_session):
 @pytest.fixture
 def auth_headers(test_user):
     """Create authentication headers."""
-    token = create_access_token({"sub": test_user.username, "user_id": test_user.id})
+    token = create_access_token(
+        {"sub": test_user.username, "user_id": test_user.id}
+    )
     return {"Authorization": f"Bearer {token}"}
 
 
@@ -39,7 +43,7 @@ class TestAuthentication:
             json={
                 "username": "testuser",
                 "email": "test@example.com",
-                "password": "weak",
+                "password": "weak",  # pragma: allowlist secret
             },
         )
         assert response.status_code == 422
@@ -52,7 +56,7 @@ class TestAuthentication:
             json={
                 "username": "testuser",
                 "email": "test@example.com",
-                "password": "StrongPass123!",
+                "password": "StrongPass123!",  # pragma: allowlist secret
             },
         )
         assert response.status_code == 201
@@ -61,14 +65,22 @@ class TestAuthentication:
     def test_login_invalid_credentials(self, db_session, client):
         """Test login with invalid credentials."""
         response = client.post(
-            "/auth/login", data={"username": "nonexistent", "password": "wrongpassword"}
+            "/auth/login",
+            data={
+                "username": "nonexistent",
+                "password": "wrongpassword",
+            },  # pragma: allowlist secret
         )
         assert response.status_code == 401
 
     def test_login_valid_credentials(self, test_user, client):
         """Test login with valid credentials."""
         response = client.post(
-            "/auth/login", data={"username": "testuser", "password": "TestPass123!"}
+            "/auth/login",
+            data={
+                "username": "testuser",
+                "password": "TestPass123!",
+            },  # pragma: allowlist secret
         )
         assert response.status_code == 200
         assert "access_token" in response.json()
@@ -78,7 +90,9 @@ class TestAuthentication:
         response = client.get("/users/me")
         assert response.status_code == 403
 
-    def test_protected_endpoint_with_token(self, auth_headers, db_session, client):
+    def test_protected_endpoint_with_token(
+        self, auth_headers, db_session, client
+    ):
         """Test accessing protected endpoint with valid token."""
         response = client.get("/users/me", headers=auth_headers)
         assert response.status_code == 200
@@ -169,7 +183,9 @@ class TestPasswordSecurity:
         ]
 
         for password in weak_passwords:
-            is_valid, issues = SecurityValidator.validate_password_strength(password)
+            is_valid, issues = SecurityValidator.validate_password_strength(
+                password
+            )
             assert not is_valid
             assert len(issues) > 0
 
@@ -184,7 +200,9 @@ class TestPasswordSecurity:
         ]
 
         for password in strong_passwords:
-            is_valid, issues = SecurityValidator.validate_password_strength(password)
+            is_valid, issues = SecurityValidator.validate_password_strength(
+                password
+            )
             assert is_valid
             assert len(issues) == 0
 
@@ -199,7 +217,9 @@ class TestAccountSecurity:
         user = User(
             username="locktest",
             email="locktest@example.com",
-            hashed_password=get_password_hash("TestPass123!"),
+            hashed_password=get_password_hash(
+                "TestPass123!"
+            ),  # pragma: allowlist secret
             failed_login_attempts=4,
         )
         db_session.add(user)

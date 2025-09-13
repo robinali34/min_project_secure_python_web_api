@@ -64,7 +64,11 @@ async def add_token_form(
     request: Request, current_user: dict = Depends(get_current_user)
 ):
     """Form to add a new OAuth2 token."""
-    available_services = ["github", "google", "microsoft"]  # Predefined services
+    available_services = [
+        "github",
+        "google",
+        "microsoft",
+    ]  # Predefined services
     available_scopes = get_available_scopes()
 
     return templates.TemplateResponse(
@@ -113,7 +117,9 @@ async def add_token(
     # Store token
     try:
         token_manager.store_token(db, current_user["id"], token_data, request)
-        return RedirectResponse(url="/oauth/", status_code=status.HTTP_303_SEE_OTHER)
+        return RedirectResponse(
+            url="/oauth/", status_code=status.HTTP_303_SEE_OTHER
+        )
     except Exception as e:
         raise HTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
@@ -122,7 +128,9 @@ async def add_token(
 
 
 @router.post(
-    "/tokens", response_model=OAuth2TokenResponse, status_code=status.HTTP_201_CREATED
+    "/tokens",
+    response_model=OAuth2TokenResponse,
+    status_code=status.HTTP_201_CREATED,
 )
 async def create_token(
     token_data: OAuth2TokenCreate,
@@ -162,7 +170,9 @@ async def get_user_tokens(
     return tokens
 
 
-@router.get("/tokens/{service_name}", response_model=Optional[OAuth2TokenResponse])
+@router.get(
+    "/tokens/{service_name}", response_model=Optional[OAuth2TokenResponse]
+)
 async def get_token(
     service_name: str,
     scope: Optional[str] = None,
@@ -170,7 +180,9 @@ async def get_token(
     db: Session = Depends(get_db),
 ):
     """Get a specific OAuth2 token."""
-    token = token_manager.get_token(db, current_user["id"], service_name, scope)
+    token = token_manager.get_token(
+        db, current_user["id"], service_name, scope
+    )
     if not token:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
@@ -212,7 +224,9 @@ async def revoke_token(
     request: Request = None,
 ):
     """Revoke an OAuth2 token."""
-    success = token_manager.revoke_token(db, current_user["id"], service_name, request)
+    success = token_manager.revoke_token(
+        db, current_user["id"], service_name, request
+    )
     if not success:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
@@ -249,9 +263,13 @@ async def update_token(
 
     # Update fields
     if token_update.access_token:
-        token.access_token = token_manager._encrypt_token(token_update.access_token)
+        token.access_token = token_manager._encrypt_token(
+            token_update.access_token
+        )
     if token_update.refresh_token:
-        token.refresh_token = token_manager._encrypt_token(token_update.refresh_token)
+        token.refresh_token = token_manager._encrypt_token(
+            token_update.refresh_token
+        )
     if token_update.expires_in:
         token.expires_at = datetime.now(timezone.utc) + timedelta(
             seconds=token_update.expires_in
@@ -304,7 +322,8 @@ async def get_available_scopes_endpoint():
 
 @router.post("/cleanup")
 async def cleanup_expired_tokens(
-    current_user: dict = Depends(get_current_user), db: Session = Depends(get_db)
+    current_user: dict = Depends(get_current_user),
+    db: Session = Depends(get_db),
 ):
     """Clean up expired tokens (admin only)."""
     if not current_user.get("is_superuser"):
@@ -326,7 +345,11 @@ async def password_entry_form(
 
     return templates.TemplateResponse(
         "password_entry.html",
-        {"request": request, "user": current_user, "services": available_services},
+        {
+            "request": request,
+            "user": current_user,
+            "services": available_services,
+        },
     )
 
 
@@ -344,7 +367,8 @@ async def verify_password_and_get_tokens(
     # For now, we'll just check if it's not empty
     if not password:
         raise HTTPException(
-            status_code=status.HTTP_400_BAD_REQUEST, detail="Password is required"
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="Password is required",
         )
 
     # Get tokens for the service

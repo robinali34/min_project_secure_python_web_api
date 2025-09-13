@@ -28,7 +28,9 @@ def create_test_database():
     engine = create_engine(
         SQLALCHEMY_DATABASE_URL, connect_args={"check_same_thread": False}
     )
-    TestingSessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
+    TestingSessionLocal = sessionmaker(
+        autocommit=False, autoflush=False, bind=engine
+    )
     return engine, TestingSessionLocal, test_db_path
 
 
@@ -111,7 +113,9 @@ def auth_headers(test_user):
     """Create authentication headers."""
     from app.security import create_access_token
 
-    token = create_access_token({"sub": test_user.username, "user_id": test_user.id})
+    token = create_access_token(
+        {"sub": test_user.username, "user_id": test_user.id}
+    )
     return {"Authorization": f"Bearer {token}"}
 
 
@@ -124,7 +128,9 @@ def superuser_headers(db_session):
     superuser = User(
         username="superuser",
         email="superuser@example.com",
-        hashed_password="$2b$12$LQv3c1yqBWVHxkd0LHAkCOYz6TtxMQJqhN8/LewdBPj4JdGJ8.5K2",  # "testpassword123"
+        hashed_password=(
+            "$2b$12$LQv3c1yqBWVHxkd0LHAkCOYz6TtxMQJqhN8/LewdBPj4JdGJ8.5K2"
+        ),  # "testpassword123"
         is_active=True,
         is_superuser=True,
         is_verified=True,
@@ -133,5 +139,7 @@ def superuser_headers(db_session):
     db_session.commit()
     db_session.refresh(superuser)
 
-    token = create_access_token({"sub": superuser.username, "user_id": superuser.id})
+    token = create_access_token(
+        {"sub": superuser.username, "user_id": superuser.id}
+    )
     return {"Authorization": f"Bearer {token}"}

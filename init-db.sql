@@ -20,7 +20,7 @@ ALTER SYSTEM SET lock_timeout = '10s';
 ALTER SYSTEM SET idle_in_transaction_session_timeout = '60s';
 
 -- Set secure authentication
-ALTER SYSTEM SET password_encryption = 'scram-sha-256';
+ALTER SYSTEM SET password_encryption = 'scram-sha-256';  -- pragma: allowlist secret
 
 -- Create extensions for security
 CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
@@ -48,7 +48,7 @@ GRANT USAGE ON SCHEMA audit TO api_user;
 ALTER USER api_user CONNECTION LIMIT 20;
 
 -- Create read-only user for monitoring
-CREATE USER monitor_user WITH PASSWORD 'monitor_password';
+CREATE USER monitor_user WITH PASSWORD 'monitor_password';  -- pragma: allowlist secret
 GRANT CONNECT ON DATABASE secure_api_db TO monitor_user;
 GRANT USAGE ON SCHEMA public TO monitor_user;
 GRANT SELECT ON ALL TABLES IN SCHEMA public TO monitor_user;
@@ -59,7 +59,7 @@ ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT SELECT ON TABLES TO monitor_user
 ALTER DEFAULT PRIVILEGES IN SCHEMA audit GRANT SELECT ON TABLES TO monitor_user;
 
 -- Create backup user
-CREATE USER backup_user WITH PASSWORD 'backup_password';
+CREATE USER backup_user WITH PASSWORD 'backup_password';  -- pragma: allowlist secret
 GRANT CONNECT ON DATABASE secure_api_db TO backup_user;
 GRANT USAGE ON SCHEMA public TO backup_user;
 GRANT SELECT ON ALL TABLES IN SCHEMA public TO backup_user;

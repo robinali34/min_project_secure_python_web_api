@@ -23,7 +23,9 @@ limiter = Limiter(key_func=get_remote_address)
 class SecurityMiddleware(BaseHTTPMiddleware):
     """Custom security middleware for request processing."""
 
-    async def dispatch(self, request: Request, call_next: Callable) -> Response:
+    async def dispatch(
+        self, request: Request, call_next: Callable
+    ) -> Response:  # noqa: C901
         # Generate request ID for tracking
         request_id = str(uuid.uuid4())
         request.state.request_id = request_id
@@ -53,7 +55,9 @@ class SecurityMiddleware(BaseHTTPMiddleware):
                         log_security_event(
                             db=db,
                             event_type="unexpected_error",
-                            event_data=f"error={str(e)}, path={request.url.path}",
+                            event_data=(
+                                f"error={str(e)}, path={request.url.path}"
+                            ),
                             severity="ERROR",
                             request=request,
                         )
@@ -64,7 +68,8 @@ class SecurityMiddleware(BaseHTTPMiddleware):
                             pass
                 except Exception:
                     # If logging fails, just continue
-                    # This is intentional - we don't want logging failures to break the app
+                    # This is intentional - we don't want logging failures to
+                    # break the app
                     pass  # nosec B110
 
             return JSONResponse(
@@ -73,9 +78,9 @@ class SecurityMiddleware(BaseHTTPMiddleware):
             )
 
         # Add security headers manually
-        response.headers["Strict-Transport-Security"] = (
-            "max-age=31536000; includeSubDomains"
-        )
+        response.headers[
+            "Strict-Transport-Security"
+        ] = "max-age=31536000; includeSubDomains"
         response.headers["Referrer-Policy"] = "strict-origin-when-cross-origin"
         response.headers["Content-Security-Policy"] = (
             "default-src 'self'; script-src 'self'; style-src 'self'; "
@@ -87,7 +92,8 @@ class SecurityMiddleware(BaseHTTPMiddleware):
         response.headers["Cross-Origin-Embedder-Policy"] = "require-corp"
         response.headers["Cross-Origin-Resource-Policy"] = "same-origin"
         response.headers["Permissions-Policy"] = (
-            "camera=(), microphone=(), geolocation=(), payment=(), usb=(), magnetometer=(), gyroscope=(), accelerometer=()"
+            "camera=(), microphone=(), geolocation=(), payment=(), usb=(), "
+            "magnetometer=(), gyroscope=(), accelerometer=()"
         )
 
         # Add custom security headers
@@ -111,7 +117,8 @@ class SecurityMiddleware(BaseHTTPMiddleware):
                         db=db,
                         event_type="slow_request",
                         event_data=(
-                            f"path={request.url.path}, time={process_time:.2f}s"
+                            f"path={request.url.path}, "
+                            f"time={process_time:.2f}s"
                         ),
                         severity="WARNING",
                         request=request,
@@ -123,7 +130,8 @@ class SecurityMiddleware(BaseHTTPMiddleware):
                         pass
             except Exception:
                 # If logging fails, just continue
-                # This is intentional - we don't want logging failures to break the app
+                # This is intentional - we don't want logging failures to
+                # break the app
                 pass  # nosec B110
 
         return response
@@ -143,7 +151,9 @@ class SecurityMiddleware(BaseHTTPMiddleware):
 class RateLimitMiddleware(BaseHTTPMiddleware):
     """Rate limiting middleware."""
 
-    async def dispatch(self, request: Request, call_next: Callable) -> Response:
+    async def dispatch(
+        self, request: Request, call_next: Callable
+    ) -> Response:
         # Apply rate limiting
         try:
             # This is a simplified rate limiting implementation

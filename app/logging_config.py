@@ -50,7 +50,11 @@ class SecurityLogger:
         self.logger = structlog.get_logger("security")
 
     def log_authentication_attempt(
-        self, username: str, success: bool, ip_address: str, user_agent: str = None
+        self,
+        username: str,
+        success: bool,
+        ip_address: str,
+        user_agent: str = None,
     ) -> None:
         """Log authentication attempts."""
         self.logger.info(
@@ -75,7 +79,9 @@ class SecurityLogger:
             event_type="authorization_failure",
         )
 
-    def log_security_event(self, event_type: str, severity: str, **kwargs: Any) -> None:
+    def log_security_event(
+        self, event_type: str, severity: str, **kwargs: Any
+    ) -> None:
         """Log general security events."""
         log_level = getattr(logging, severity.upper(), logging.INFO)
         self.logger.log(
