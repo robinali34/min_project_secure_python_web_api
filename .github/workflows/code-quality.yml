@@ -41,7 +41,7 @@ jobs:
 
     - name: Run isort import sorting check
       run: |
-        isort --check-only --diff app/ tests/
+        isort --check-only --diff --profile black app/ tests/
 
     - name: Run Flake8 linting
       run: |

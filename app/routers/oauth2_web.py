@@ -17,11 +17,7 @@ from app.oauth2_service import (
     get_oauth2_service_config,
     validate_scope,
 )
-from app.schemas import (
-    OAuth2TokenCreate,
-    OAuth2TokenResponse,
-    OAuth2TokenUpdate,
-)
+from app.schemas import OAuth2TokenCreate, OAuth2TokenResponse, OAuth2TokenUpdate
 from app.security import log_security_event
 
 router = APIRouter(prefix="/oauth", tags=["oauth2-web"])
@@ -121,9 +117,7 @@ async def add_token(
     # Store token
     try:
         token_manager.store_token(db, current_user["id"], token_data, request)
-        return RedirectResponse(
-            url="/oauth/", status_code=status.HTTP_303_SEE_OTHER
-        )
+        return RedirectResponse(url="/oauth/", status_code=status.HTTP_303_SEE_OTHER)
     except Exception as e:
         raise HTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
@@ -177,9 +171,7 @@ async def get_user_tokens(
     return tokens
 
 
-@router.get(
-    "/tokens/{service_name}", response_model=Optional[OAuth2TokenResponse]
-)
+@router.get("/tokens/{service_name}", response_model=Optional[OAuth2TokenResponse])
 async def get_token(
     service_name: str,
     scope: Optional[str] = None,
@@ -187,9 +179,7 @@ async def get_token(
     db: Session = Depends(get_db),
 ):
     """Get a specific OAuth2 token."""
-    token = token_manager.get_token(
-        db, current_user["id"], service_name, scope
-    )
+    token = token_manager.get_token(db, current_user["id"], service_name, scope)
     if not token:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
@@ -231,9 +221,7 @@ async def revoke_token(
     request: Request = None,
 ):
     """Revoke an OAuth2 token."""
-    success = token_manager.revoke_token(
-        db, current_user["id"], service_name, request
-    )
+    success = token_manager.revoke_token(db, current_user["id"], service_name, request)
     if not success:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
@@ -270,13 +258,9 @@ async def update_token(
 
     # Update fields
     if token_update.access_token:
-        token.access_token = token_manager._encrypt_token(
-            token_update.access_token
-        )
+        token.access_token = token_manager._encrypt_token(token_update.access_token)
     if token_update.refresh_token:
-        token.refresh_token = token_manager._encrypt_token(
-            token_update.refresh_token
-        )
+        token.refresh_token = token_manager._encrypt_token(token_update.refresh_token)
     if token_update.expires_in:
         token.expires_at = datetime.now(timezone.utc) + timedelta(
             seconds=token_update.expires_in

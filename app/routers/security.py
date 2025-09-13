@@ -44,9 +44,7 @@ async def get_security_events(
 
     # Order by most recent first
     events = (
-        query.order_by(desc(SecurityEvent.created_at)).offset(skip).limit(
-            limit
-        ).all()
+        query.order_by(desc(SecurityEvent.created_at)).offset(skip).limit(limit).all()
     )
 
     return events
@@ -85,16 +83,12 @@ async def get_security_stats(
 
     # Count total events
     total_events = (
-        db.query(SecurityEvent).filter(
-            SecurityEvent.created_at >= since
-        ).count()
+        db.query(SecurityEvent).filter(SecurityEvent.created_at >= since).count()
     )
 
     return {
         "total_events": total_events,
-        "event_types": {
-            event_type: count for event_type, count in event_types
-        },
+        "event_types": {event_type: count for event_type, count in event_types},
         "severities": {severity: count for severity, count in severities},
         "time_range_hours": hours,
     }
@@ -194,9 +188,7 @@ async def security_health_check(
 
     # Check for locked users
     locked_users = (
-        db.query(User).filter(
-            User.locked_until > datetime.now(timezone.utc)
-        ).count()
+        db.query(User).filter(User.locked_until > datetime.now(timezone.utc)).count()
     )
 
     # Check for failed login attempts in the last hour
