@@ -144,28 +144,58 @@ dmypy.json
 ehthumbs.db
 Thumbs.db
 
-# Project specific
+# Database files
+*.db
+*.sqlite
+*.sqlite3
+
+# Logs
 logs/
 *.log
-*.db
-*.sqlite
-*.sqlite3
-
-# SSL certificates
-ssl/
-*.pem
-*.key
-*.crt
-*.p12
-
-# Docker
-.dockerignore
-
-# Database
-*.db
-*.sqlite
-*.sqlite3
 
 # Temporary files
 tmp/
 temp/
+*.tmp
+*.temp
+
+# Debug files
+debug_*.py
+*_debug.py
+
+# Test files
+test_*.py
+*_test.py
+
+# Docker
+.dockerignore
+
+# SSL certificates
+*.pem
+*.key
+*.crt
+*.csr
+ssl/
+
+# Environment files
+.env.local
+.env.development
+.env.test
+.env.production
+.env.staging
+
+# Secrets
+.secrets.baseline
+secrets.json
+
+# Coverage reports
+coverage/
+htmlcov/
+.coverage
+coverage.xml
+
+# Pytest
+.pytest_cache/
+
+# Pre-commit
+.pre-commit-config.yaml.bak

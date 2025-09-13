@@ -112,3 +112,58 @@ class SecurityEventResponse(BaseModel):
     created_at: datetime
     
     model_config = {"from_attributes": True}
+
+
+class OAuth2TokenCreate(BaseModel):
+    """Schema for OAuth2 token creation."""
+    service_name: str = Field(..., min_length=1, max_length=50)
+    access_token: str = Field(..., min_length=1)
+    refresh_token: Optional[str] = None
+    token_type: str = Field(default="Bearer", max_length=20)
+    expires_in: Optional[int] = None  # Seconds until expiration
+    scope: str = Field(..., min_length=1, max_length=255)
+    client_id: Optional[str] = None
+
+
+class OAuth2TokenUpdate(BaseModel):
+    """Schema for OAuth2 token updates."""
+    access_token: Optional[str] = None
+    refresh_token: Optional[str] = None
+    expires_in: Optional[int] = None
+    scope: Optional[str] = None
+    is_active: Optional[bool] = None
+
+
+class OAuth2TokenResponse(BaseModel):
+    """Schema for OAuth2 token response."""
+    id: int
+    user_id: int
+    service_name: str
+    token_type: str
+    expires_at: Optional[datetime]
+    scope: str
+    client_id: Optional[str]
+    is_active: bool
+    created_at: datetime
+    updated_at: datetime
+    last_used_at: Optional[datetime]
+    
+    model_config = {"from_attributes": True}
+
+
+class OAuth2ServiceConfig(BaseModel):
+    """Schema for OAuth2 service configuration."""
+    service_name: str = Field(..., min_length=1, max_length=50)
+    client_id: str = Field(..., min_length=1)
+    client_secret: str = Field(..., min_length=1)
+    authorization_url: str = Field(..., min_length=1)
+    token_url: str = Field(..., min_length=1)
+    scope: str = Field(..., min_length=1)
+    redirect_uri: str = Field(..., min_length=1)
+
+
+class PasswordEntry(BaseModel):
+    """Schema for password entry in web interface."""
+    password: str = Field(..., min_length=1, max_length=128)
+    service_name: str = Field(..., min_length=1, max_length=50)
+    remember_me: bool = Field(default=False)

@@ -82,3 +82,36 @@ class SecurityEvent(Base):
         Index("idx_security_events_user_created", "user_id", "created_at"),
         Index("idx_security_events_severity_created", "severity", "created_at"),
     )
+
+
+class OAuth2Token(Base):
+    """OAuth2 token model for caching external service tokens."""
+    
+    __tablename__ = "oauth2_tokens"
+    
+    id = Column(Integer, primary_key=True, index=True)
+    user_id = Column(Integer, nullable=False, index=True)
+    service_name = Column(String(50), nullable=False, index=True)  # e.g., 'github', 'google'
+    access_token = Column(Text, nullable=False)  # Encrypted token
+    refresh_token = Column(Text, nullable=True)  # Encrypted refresh token
+    token_type = Column(String(20), default="Bearer", nullable=False)
+    expires_at = Column(DateTime(timezone=True), nullable=True, index=True)
+    scope = Column(String(255), nullable=False, index=True)  # Space-separated scopes
+    
+    # Additional OAuth2 fields
+    client_id = Column(String(255), nullable=True)
+    client_secret_hash = Column(String(255), nullable=True)  # Hashed for security
+    
+    # Security and audit fields
+    is_active = Column(Boolean, default=True, nullable=False)
+    created_at = Column(DateTime(timezone=True), default=func.now(), nullable=False)
+    updated_at = Column(DateTime(timezone=True), default=func.now(), onupdate=func.now(), nullable=False)
+    last_used_at = Column(DateTime(timezone=True), nullable=True)
+    
+    # Indexes for efficient queries
+    __table_args__ = (
+        Index("idx_oauth2_tokens_user_service", "user_id", "service_name"),
+        Index("idx_oauth2_tokens_service_scope", "service_name", "scope"),
+        Index("idx_oauth2_tokens_expires_active", "expires_at", "is_active"),
+        Index("idx_oauth2_tokens_user_active", "user_id", "is_active"),
+    )

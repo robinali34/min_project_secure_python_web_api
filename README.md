@@ -1,57 +1,49 @@
 # Secure Python Web API
 
-A comprehensive Python-based web API demonstrating security best practices with PostgreSQL. This project showcases modern security techniques, authentication, authorization, input validation, and monitoring.
+A secure, production-ready Python web API built with FastAPI, featuring comprehensive security measures, authentication, and testing.
 
-## 🛡️ Security Features
+## Features
 
-### Authentication & Authorization
-- **JWT-based authentication** with access and refresh tokens
-- **Password hashing** using bcrypt with configurable rounds
-- **Account locking** after failed login attempts
-- **Role-based access control** with superuser privileges
-- **Session management** with token revocation
+- **FastAPI Framework**: Modern, fast web framework for building APIs
+- **JWT Authentication**: Secure token-based authentication with refresh tokens
+- **Password Security**: Bcrypt password hashing with configurable rounds
+- **Rate Limiting**: Built-in rate limiting to prevent abuse
+- **Security Headers**: Comprehensive security headers for protection
+- **Input Validation**: Pydantic-based request/response validation
+- **SQL Injection Protection**: Parameterized queries and input sanitization
+- **XSS Protection**: Input validation and output encoding
+- **Account Lockout**: Automatic account locking after failed attempts
+- **Security Logging**: Comprehensive security event logging
+- **Comprehensive Testing**: Full test suite with security-focused tests
+- **Docker Support**: Containerized deployment with Docker
+- **CI/CD Pipeline**: GitHub Actions workflows for testing and deployment
 
-### Input Validation & Sanitization
-- **Pydantic schemas** for request/response validation
-- **Password strength validation** with complexity requirements
-- **Input sanitization** to prevent injection attacks
-- **Email and username format validation**
-- **SQL injection prevention**
+## Security Features
 
-### Security Headers & Middleware
-- **Comprehensive security headers** (HSTS, CSP, X-Frame-Options, etc.)
-- **CORS configuration** with allowed origins
-- **Rate limiting** to prevent abuse
-- **Request ID tracking** for audit trails
-- **Slow request monitoring**
+- **Authentication & Authorization**: JWT-based with refresh token rotation
+- **Password Security**: Strong password requirements and bcrypt hashing
+- **Rate Limiting**: Prevents brute force attacks
+- **Security Headers**: HSTS, CSP, X-Frame-Options, etc.
+- **Input Validation**: Strict validation of all inputs
+- **SQL Injection Protection**: Parameterized queries
+- **XSS Protection**: Input sanitization and validation
+- **Account Security**: Lockout mechanisms and security logging
+- **Dependency Scanning**: Automated security vulnerability scanning
 
-### Database Security
-- **SSL-required connections** to PostgreSQL
-- **Connection pooling** with security parameters
-- **Prepared statements** to prevent SQL injection
-- **Audit logging** for all database operations
-- **Secure connection parameters**
+## Requirements
 
-### Monitoring & Logging
-- **Structured logging** with JSON format
-- **Security event tracking** for all operations
-- **Failed login attempt monitoring**
-- **Account lockout tracking**
-- **Performance monitoring**
+- Python 3.11+
+- SQLite (for development) or PostgreSQL (for production)
+- Redis (optional, for caching)
 
-## 🚀 Quick Start
+## Quick Start
 
-### Prerequisites
-- Python 3.8+
-- PostgreSQL 12+
-- pip or poetry
-
-### Installation
+### Local Development
 
 1. **Clone the repository**
    ```bash
    git clone <repository-url>
-   cd secure_python_web_api
+   cd secure-python-web-api
    ```
 
 2. **Create virtual environment**
@@ -63,274 +55,279 @@ A comprehensive Python-based web API demonstrating security best practices with 
 3. **Install dependencies**
    ```bash
    pip install -r requirements.txt
+   pip install -r requirements-dev.txt
    ```
 
-4. **Set up environment variables**
+4. **Set up pre-commit hooks**
    ```bash
-   cp env.example .env
-   # Edit .env with your configuration
+   pre-commit install
    ```
 
-5. **Configure PostgreSQL**
+5. **Run the application**
    ```bash
-   # Create database
-   createdb secure_api_db
-   
-   # Set up user with appropriate permissions
-   psql -c "CREATE USER api_user WITH PASSWORD 'secure_password';"
-   psql -c "GRANT ALL PRIVILEGES ON DATABASE secure_api_db TO api_user;"
+   uvicorn app.main:app --reload
    ```
 
-6. **Run database migrations**
+6. **Access the API**
+   - API Documentation: http://localhost:8000/docs
+   - Health Check: http://localhost:8000/health
+
+### Using Docker
+
+1. **Build and run with Docker Compose**
    ```bash
-   alembic upgrade head
+   docker-compose up --build
    ```
 
-7. **Start the application**
+2. **Run tests in Docker**
    ```bash
-   python -m app.main
+   docker-compose -f docker-compose.test.yml up --build --abort-on-container-exit
    ```
 
-The API will be available at `http://localhost:8000`
+## Testing
 
-## 📚 API Documentation
-
-### Authentication Endpoints
-
-#### Register User
-```http
-POST /auth/register
-Content-Type: application/json
-
-{
-  "username": "johndoe",
-  "email": "john@example.com",
-  "password": "SecurePass123!"
-}
+### Run All Tests
+```bash
+make test
 ```
 
-#### Login
-```http
-POST /auth/login
-Content-Type: application/x-www-form-urlencoded
-
-username=johndoe&password=SecurePass123!
+### Run Security Tests
+```bash
+make test-security
 ```
 
-#### Refresh Token
-```http
-POST /auth/refresh
-Content-Type: application/json
-
-{
-  "refresh_token": "your_refresh_token"
-}
+### Run Tests with Coverage
+```bash
+make test-coverage
 ```
 
-#### Change Password
-```http
-POST /auth/change-password
-Authorization: Bearer your_access_token
-Content-Type: application/json
-
-{
-  "current_password": "OldPass123!",
-  "new_password": "NewSecurePass456!"
-}
+### Run Tests in Docker
+```bash
+make docker-test
 ```
 
-### User Management Endpoints
+## Development
 
-#### Get Current User
-```http
-GET /users/me
-Authorization: Bearer your_access_token
+### Code Quality
+
+```bash
+# Format code
+make format
+
+# Check formatting
+make format-check
+
+# Run linting
+make lint
+
+# Run type checking
+make type-check
+
+# Run all quality checks
+make ci
 ```
 
-#### Update Profile
-```http
-PUT /users/me
-Authorization: Bearer your_access_token
-Content-Type: application/json
+### Security Scanning
 
-{
-  "username": "newusername",
-  "email": "newemail@example.com"
-}
+```bash
+# Run security scans
+make security
+
+# Run comprehensive security scans
+make security-full
 ```
 
-### Security Monitoring Endpoints
+### Pre-commit Hooks
 
-#### Get Security Events
-```http
-GET /security/events?hours=24&severity=WARNING
-Authorization: Bearer your_superuser_token
+The project uses pre-commit hooks to ensure code quality:
+
+```bash
+# Install pre-commit hooks
+make install-pre-commit
+
+# Run hooks manually
+pre-commit run --all-files
 ```
 
-#### Security Health Check
-```http
-GET /security/health
-Authorization: Bearer your_access_token
+## Docker
+
+### Build Image
+```bash
+make docker-build
 ```
 
-## 🔧 Configuration
+### Run Container
+```bash
+make docker-run
+```
+
+### Development Environment
+```bash
+make docker-dev
+```
+
+## Deployment
 
 ### Environment Variables
 
-| Variable | Description | Default |
-|----------|-------------|---------|
-| `DATABASE_URL` | PostgreSQL connection string | Required |
-| `SECRET_KEY` | JWT secret key (min 32 chars) | Required |
-| `BCRYPT_ROUNDS` | Password hashing rounds | 12 |
-| `ACCESS_TOKEN_EXPIRE_MINUTES` | Access token validity | 30 |
-| `REFRESH_TOKEN_EXPIRE_DAYS` | Refresh token validity | 7 |
-| `RATE_LIMIT_PER_MINUTE` | Rate limit per minute | 60 |
-| `CORS_ORIGINS` | Allowed CORS origins | `["http://localhost:3000"]` |
-| `ALLOWED_HOSTS` | Allowed host headers | `["localhost", "127.0.0.1"]` |
+Create a `.env` file with the following variables:
 
-### Security Configuration
+```env
+# Database
+DATABASE_URL=postgresql://user:password@localhost/dbname
 
-The application includes several security configurations:
+# Security
+SECRET_KEY=your-secret-key-here
+ACCESS_TOKEN_EXPIRE_MINUTES=30
+REFRESH_TOKEN_EXPIRE_DAYS=7
+BCRYPT_ROUNDS=12
 
-- **Password Requirements**: Minimum 8 characters with uppercase, lowercase, digits, and special characters
-- **Account Lockout**: 5 failed attempts lock account for 30 minutes
-- **Token Expiration**: Configurable access and refresh token lifetimes
-- **Rate Limiting**: Configurable per-minute request limits
-- **Security Headers**: Comprehensive set of security headers
+# Host Configuration
+ALLOWED_HOSTS=localhost,127.0.0.1,yourdomain.com
 
-## 🧪 Testing
-
-### Run Tests
-```bash
-pytest
+# Optional: Redis
+REDIS_URL=redis://localhost:6379
 ```
-
-### Test Coverage
-```bash
-pytest --cov=app --cov-report=html
-```
-
-### Security Testing
-```bash
-# Test password strength validation
-python -c "from app.security_utils import SecurityValidator; print(SecurityValidator.validate_password_strength('weak'))"
-
-# Test input sanitization
-python -c "from app.security_utils import SecurityValidator; print(SecurityValidator.sanitize_input('test<script>alert(1)</script>'))"
-```
-
-## 🔍 Security Best Practices Implemented
-
-### 1. Authentication Security
-- Strong password requirements
-- Account lockout after failed attempts
-- JWT tokens with short expiration times
-- Refresh token rotation
-- Secure password hashing with bcrypt
-
-### 2. Input Validation
-- Comprehensive input validation using Pydantic
-- SQL injection prevention
-- XSS prevention through input sanitization
-- Length and format validation
-
-### 3. Database Security
-- SSL-required connections
-- Parameterized queries
-- Connection pooling with security settings
-- Audit logging for all operations
-
-### 4. API Security
-- Rate limiting to prevent abuse
-- CORS configuration
-- Security headers
-- Request/response validation
-
-### 5. Monitoring & Logging
-- Structured logging for security events
-- Failed login attempt tracking
-- Performance monitoring
-- Security event correlation
-
-## 🚨 Security Considerations
 
 ### Production Deployment
 
-1. **Environment Variables**
-   - Use strong, unique secret keys
-   - Configure proper CORS origins
-   - Set appropriate rate limits
-   - Use environment-specific database URLs
+1. **Using Docker**
+   ```bash
+   docker build -t secure-python-web-api .
+   docker run -p 8000:8000 --env-file .env secure-python-web-api
+   ```
 
-2. **Database Security**
-   - Use SSL connections
-   - Implement database-level security policies
-   - Regular security updates
-   - Backup and recovery procedures
+2. **Using Docker Compose**
+   ```bash
+   docker-compose up -d
+   ```
 
-3. **Infrastructure Security**
-   - Use HTTPS in production
-   - Implement proper firewall rules
-   - Regular security updates
-   - Monitor logs and metrics
+3. **Using Kubernetes**
+   ```bash
+   kubectl apply -f k8s/
+   ```
 
-4. **Application Security**
-   - Regular dependency updates
-   - Security scanning
-   - Penetration testing
-   - Code review processes
+## API Documentation
 
-## 📖 Development
+### Authentication Endpoints
 
-### Code Quality
-```bash
-# Format code
-black app/
+- `POST /auth/register` - Register a new user
+- `POST /auth/login` - Login user
+- `POST /auth/refresh` - Refresh access token
+- `POST /auth/logout` - Logout user
+- `POST /auth/change-password` - Change password
 
-# Sort imports
-isort app/
+### User Management
 
-# Lint code
-flake8 app/
+- `GET /users/me` - Get current user info
+- `PUT /users/me` - Update current user
+- `GET /users/` - List users (admin only)
+- `DELETE /users/{user_id}` - Delete user (admin only)
 
-# Type checking
-mypy app/
-```
+### Security Endpoints
 
-### Database Migrations
-```bash
-# Create migration
-alembic revision --autogenerate -m "Description"
+- `GET /security/events` - Get security events
+- `POST /security/events` - Create security event
+- `GET /security/stats` - Get security statistics
 
-# Apply migrations
-alembic upgrade head
+### Health Check
 
-# Rollback migration
-alembic downgrade -1
-```
+- `GET /health` - Application health status
 
-## 🤝 Contributing
+## Security Considerations
+
+### Authentication
+- JWT tokens with short expiration times
+- Refresh token rotation
+- Secure password requirements
+- Account lockout after failed attempts
+
+### Input Validation
+- Strict Pydantic validation
+- SQL injection protection
+- XSS prevention
+- File upload restrictions
+
+### Security Headers
+- HSTS (HTTP Strict Transport Security)
+- CSP (Content Security Policy)
+- X-Frame-Options
+- X-Content-Type-Options
+- Referrer-Policy
+
+### Rate Limiting
+- Per-endpoint rate limiting
+- IP-based rate limiting
+- Configurable limits
+
+## Testing Strategy
+
+### Test Types
+- **Unit Tests**: Individual function testing
+- **Integration Tests**: API endpoint testing
+- **Security Tests**: Security-focused test cases
+- **Performance Tests**: Load and stress testing
+
+### Security Testing
+- SQL injection attempts
+- XSS prevention
+- Authentication bypass attempts
+- Rate limiting verification
+- Input validation testing
+
+## CI/CD Pipeline
+
+The project includes comprehensive GitHub Actions workflows:
+
+- **CI Pipeline**: Tests, linting, and security scanning
+- **Security Scan**: Automated security vulnerability scanning
+- **Code Quality**: Code formatting and type checking
+- **Docker Build**: Automated Docker image building
+- **Deployment**: Automated deployment to production
+
+## Contributing
 
 1. Fork the repository
-2. Create a feature branch
-3. Make your changes
-4. Add tests
-5. Run quality checks
-6. Submit a pull request
+2. Create a feature branch (`git checkout -b feature/amazing-feature`)
+3. Commit your changes (`git commit -m 'Add some amazing feature'`)
+4. Push to the branch (`git push origin feature/amazing-feature`)
+5. Open a Pull Request
 
-## 📄 License
+### Development Guidelines
 
-This project is licensed under the MIT License - see the LICENSE file for details.
+- Follow PEP 8 style guidelines
+- Write comprehensive tests
+- Update documentation
+- Ensure security considerations
+- Run all quality checks before submitting
 
-## 🆘 Support
+## License
 
-For security issues, please contact the maintainers directly.
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
 
-For general questions and support, please open an issue in the repository.
+## Support
 
-## 🔗 Additional Resources
+For support and questions:
 
-- [OWASP Top 10](https://owasp.org/www-project-top-ten/)
-- [FastAPI Security](https://fastapi.tiangolo.com/tutorial/security/)
-- [PostgreSQL Security](https://www.postgresql.org/docs/current/security.html)
-- [Python Security Best Practices](https://python-security.readthedocs.io/)
+- Create an issue in the GitHub repository
+- Check the [documentation](docs/)
+- Review the [API documentation](http://localhost:8000/docs)
+
+## Security
+
+If you discover a security vulnerability, please:
+
+1. **DO NOT** create a public issue
+2. Email security details to [security@yourdomain.com]
+3. Use GitHub's private vulnerability reporting feature
+
+## Roadmap
+
+- [ ] OAuth2 integration
+- [ ] Multi-factor authentication
+- [ ] API versioning
+- [ ] GraphQL support
+- [ ] WebSocket support
+- [ ] Advanced monitoring and metrics
+- [ ] Kubernetes deployment manifests
+- [ ] Helm charts

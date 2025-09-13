@@ -1,0 +1,33 @@
+version: '3.8'
+
+services:
+  app-test:
+    build: .
+    environment:
+      - TESTING=true
+      - DATABASE_URL=sqlite:///./test.db
+      - SECRET_KEY=test-secret-key
+      - ACCESS_TOKEN_EXPIRE_MINUTES=30
+      - REFRESH_TOKEN_EXPIRE_DAYS=7
+      - BCRYPT_ROUNDS=4
+      - ALLOWED_HOSTS=localhost,127.0.0.1,testserver
+    volumes:
+      - ./app:/app/app
+      - ./tests:/app/tests
+    command: ["python", "-m", "pytest", "tests/", "-v"]
+    depends_on:
+      - db-test
+    restart: "no"
+
+  db-test:
+    image: postgres:15-alpine
+    environment:
+      - POSTGRES_DB=secure_api_test
+      - POSTGRES_USER=test_user
+      - POSTGRES_PASSWORD=test_password
+    volumes:
+      - postgres_test_data:/var/lib/postgresql/data
+    restart: "no"
+
+volumes:
+  postgres_test_data:
