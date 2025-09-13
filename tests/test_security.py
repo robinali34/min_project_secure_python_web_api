@@ -14,7 +14,7 @@ def test_user(db_session):
         email="test@example.com",
         hashed_password=get_password_hash("TestPass123!"),
         is_active=True,
-        is_verified=True
+        is_verified=True,
     )
     db_session.add(user)
     db_session.commit()
@@ -34,38 +34,42 @@ class TestAuthentication:
 
     def test_register_weak_password(self, db_session, client):
         """Test registration with weak password."""
-        response = client.post("/auth/register", json={
-            "username": "testuser",
-            "email": "test@example.com",
-            "password": "weak"
-        })
+        response = client.post(
+            "/auth/register",
+            json={
+                "username": "testuser",
+                "email": "test@example.com",
+                "password": "weak",
+            },
+        )
         assert response.status_code == 422
         assert "String should have at least 8 characters" in response.text
 
     def test_register_strong_password(self, db_session, client):
         """Test registration with strong password."""
-        response = client.post("/auth/register", json={
-            "username": "testuser",
-            "email": "test@example.com",
-            "password": "StrongPass123!"
-        })
+        response = client.post(
+            "/auth/register",
+            json={
+                "username": "testuser",
+                "email": "test@example.com",
+                "password": "StrongPass123!",
+            },
+        )
         assert response.status_code == 201
         assert response.json()["username"] == "testuser"
 
     def test_login_invalid_credentials(self, db_session, client):
         """Test login with invalid credentials."""
-        response = client.post("/auth/login", data={
-            "username": "nonexistent",
-            "password": "wrongpassword"
-        })
+        response = client.post(
+            "/auth/login", data={"username": "nonexistent", "password": "wrongpassword"}
+        )
         assert response.status_code == 401
 
     def test_login_valid_credentials(self, test_user, client):
         """Test login with valid credentials."""
-        response = client.post("/auth/login", data={
-            "username": "testuser",
-            "password": "TestPass123!"
-        })
+        response = client.post(
+            "/auth/login", data={"username": "testuser", "password": "TestPass123!"}
+        )
         assert response.status_code == 200
         assert "access_token" in response.json()
 
@@ -91,8 +95,8 @@ class TestInputValidation:
             headers=auth_headers,
             json={
                 "username": "test'; DROP TABLE users; --",
-                "email": "test@example.com"
-            }
+                "email": "test@example.com",
+            },
         )
         # Should reject malicious input at validation layer (more secure)
         assert response.status_code == 422
@@ -104,8 +108,8 @@ class TestInputValidation:
             headers=auth_headers,
             json={
                 "username": "<script>alert('xss')</script>",
-                "email": "test@example.com"
-            }
+                "email": "test@example.com",
+            },
         )
         # Should reject malicious input at validation layer (more secure)
         assert response.status_code == 422
@@ -115,10 +119,7 @@ class TestInputValidation:
         response = client.put(
             "/users/me",
             headers=auth_headers,
-            json={
-                "username": "testuser",
-                "email": "invalid-email"
-            }
+            json={"username": "testuser", "email": "invalid-email"},
         )
         assert response.status_code == 422
 
@@ -163,8 +164,8 @@ class TestPasswordSecurity:
             "12345678",  # No uppercase, special chars
             "password",  # No uppercase, digits, special chars
             "PASSWORD",  # No lowercase, digits, special chars
-            "Pass123",   # No special chars
-            "Pass!@#",   # No digits
+            "Pass123",  # No special chars
+            "Pass!@#",  # No digits
         ]
 
         for password in weak_passwords:
@@ -199,7 +200,7 @@ class TestAccountSecurity:
             username="locktest",
             email="locktest@example.com",
             hashed_password=get_password_hash("TestPass123!"),
-            failed_login_attempts=4
+            failed_login_attempts=4,
         )
         db_session.add(user)
         db_session.commit()

@@ -47,7 +47,6 @@ class SecurityMiddleware(BaseHTTPMiddleware):
 
             if not os.getenv("TESTING"):
                 try:
-
                     db_gen = get_db()
                     db = next(db_gen)
                     try:
@@ -74,9 +73,9 @@ class SecurityMiddleware(BaseHTTPMiddleware):
             )
 
         # Add security headers manually
-        response.headers["Strict-Transport-Security"] = (
-            "max-age=31536000; includeSubDomains"
-        )
+        response.headers[
+            "Strict-Transport-Security"
+        ] = "max-age=31536000; includeSubDomains"
         response.headers["Referrer-Policy"] = "strict-origin-when-cross-origin"
         response.headers["Content-Security-Policy"] = (
             "default-src 'self'; script-src 'self'; style-src 'self'; "
@@ -87,9 +86,9 @@ class SecurityMiddleware(BaseHTTPMiddleware):
         response.headers["Cross-Origin-Opener-Policy"] = "same-origin"
         response.headers["Cross-Origin-Embedder-Policy"] = "require-corp"
         response.headers["Cross-Origin-Resource-Policy"] = "same-origin"
-        response.headers["Permissions-Policy"] = (
-            "camera=(), microphone=(), geolocation=(), payment=(), usb=(), magnetometer=(), gyroscope=(), accelerometer=()"
-        )
+        response.headers[
+            "Permissions-Policy"
+        ] = "camera=(), microphone=(), geolocation=(), payment=(), usb=(), magnetometer=(), gyroscope=(), accelerometer=()"
 
         # Add custom security headers
         response.headers["X-Request-ID"] = request_id
@@ -111,7 +110,9 @@ class SecurityMiddleware(BaseHTTPMiddleware):
                     log_security_event(
                         db=db,
                         event_type="slow_request",
-                        event_data=f"path={request.url.path}, time={process_time:.2f}s",
+                        event_data=(
+                            f"path={request.url.path}, time={process_time:.2f}s"
+                        ),
                         severity="WARNING",
                         request=request,
                     )

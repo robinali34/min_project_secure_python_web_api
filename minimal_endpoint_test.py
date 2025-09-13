@@ -15,8 +15,11 @@ from app.models import SecurityEvent, User
 
 # Test database - use in-memory database for tests
 SQLALCHEMY_DATABASE_URL = "sqlite:///:memory:"
-engine = create_engine(SQLALCHEMY_DATABASE_URL, connect_args={"check_same_thread": False})
+engine = create_engine(
+    SQLALCHEMY_DATABASE_URL, connect_args={"check_same_thread": False}
+)
 TestingSessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
+
 
 def override_get_db():
     """Override the database dependency for testing."""
@@ -25,6 +28,7 @@ def override_get_db():
         yield db
     finally:
         db.close()
+
 
 # Create all tables
 print("Creating database tables...")
@@ -42,13 +46,13 @@ test_cases = [
     {
         "username": "testuser1",
         "email": "test1@example.com",
-        "password": "StrongPass123!"
+        "password": "StrongPass123!",
     },
     {
         "username": "testuser2",
         "email": "test2@example.com",
-        "password": "AnotherPass123!"
-    }
+        "password": "AnotherPass123!",
+    },
 ]
 
 for i, test_data in enumerate(test_cases):

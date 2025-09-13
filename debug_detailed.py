@@ -17,7 +17,9 @@ os.environ["TESTING"] = "true"
 
 # Test database - use in-memory database for tests
 SQLALCHEMY_DATABASE_URL = "sqlite:///:memory:"
-engine = create_engine(SQLALCHEMY_DATABASE_URL, connect_args={"check_same_thread": False})
+engine = create_engine(
+    SQLALCHEMY_DATABASE_URL, connect_args={"check_same_thread": False}
+)
 TestingSessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 
 
@@ -43,14 +45,17 @@ client = TestClient(app)
 # Test the registration endpoint with detailed error handling
 print("Testing registration endpoint...")
 try:
-    response = client.post("/auth/register", json={
-        "username": "testuser",
-        "email": "test@example.com",
-        "password": "StrongPass123!"
-    })
+    response = client.post(
+        "/auth/register",
+        json={
+            "username": "testuser",
+            "email": "test@example.com",
+            "password": "StrongPass123!",
+        },
+    )
     print(f"Status code: {response.status_code}")
     print(f"Response: {response.text}")
-    
+
     if response.status_code == 500:
         print("500 error - checking response details...")
         try:
@@ -58,7 +63,7 @@ try:
             print(f"Error response: {response_json}")
         except:
             print("Could not parse response as JSON")
-            
+
 except Exception as e:
     print(f"Exception occurred: {e}")
     traceback.print_exc()
@@ -78,26 +83,27 @@ print("\nTesting database operations directly...")
 try:
     db_gen = override_get_db()
     db = next(db_gen)
-    
+
     # Test if we can query the database
     user_count = db.query(User).count()
     print(f"User count: {user_count}")
-    
+
     # Test if we can add a user
     from app.security import get_password_hash
+
     test_user = User(
         username="directtest",
         email="direct@example.com",
-        hashed_password=get_password_hash("TestPass123!")
+        hashed_password=get_password_hash("TestPass123!"),
     )
     db.add(test_user)
     db.commit()
     db.refresh(test_user)
     print(f"Direct user creation successful: {test_user.username}")
-    
+
     # Clean up
     next(db_gen)
-    
+
 except Exception as e:
     print(f"Database operation exception: {e}")
     traceback.print_exc()

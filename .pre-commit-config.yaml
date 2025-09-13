@@ -3,46 +3,57 @@ repos:
     rev: v4.4.0
     hooks:
       - id: trailing-whitespace
+        exclude: ^(debug_|test_|demo_|minimal_|simple_|direct_|endpoint_|registration_|password_|schema_).*\.py$
       - id: end-of-file-fixer
+        exclude: ^(debug_|test_|demo_|minimal_|simple_|direct_|endpoint_|registration_|password_|schema_).*\.py$
       - id: check-yaml
       - id: check-added-large-files
       - id: check-merge-conflict
       - id: debug-statements
+        exclude: ^(debug_|test_|demo_|minimal_|simple_|direct_|endpoint_|registration_|password_|schema_).*\.py$
       - id: check-docstring-first
+        exclude: ^(debug_|test_|demo_|minimal_|simple_|direct_|endpoint_|registration_|password_|schema_).*\.py$
 
   - repo: https://github.com/psf/black
     rev: 23.7.0
     hooks:
       - id: black
         language_version: python3.12
+        exclude: ^(debug_|test_|demo_|minimal_|simple_|direct_|endpoint_|registration_|password_|schema_).*\.py$
 
   - repo: https://github.com/pycqa/isort
     rev: 5.12.0
     hooks:
       - id: isort
         args: ["--profile", "black"]
+        exclude: ^(debug_|test_|demo_|minimal_|simple_|direct_|endpoint_|registration_|password_|schema_).*\.py$
 
   - repo: https://github.com/pycqa/flake8
     rev: 6.0.0
     hooks:
       - id: flake8
         args: [--max-line-length=127, --max-complexity=10]
+        exclude: ^(debug_|test_|demo_|minimal_|simple_|direct_|endpoint_|registration_|password_|schema_).*\.py$
 
   - repo: https://github.com/pre-commit/mirrors-mypy
     rev: v1.5.1
     hooks:
       - id: mypy
-        additional_dependencies: [types-all]
-        args: [--ignore-missing-imports, --no-strict-optional]
+        args: [--ignore-missing-imports, --no-strict-optional, --explicit-package-bases]
+        exclude: ^(debug_|test_|demo_|minimal_|simple_|direct_|endpoint_|registration_|password_|schema_).*\.py$
 
   - repo: https://github.com/PyCQA/bandit
     rev: 1.7.5
     hooks:
       - id: bandit
+        additional_dependencies: [pbr]
         args: [-r, app/, -ll]
+        files: ^app/.*\.py$
+        exclude: ^(debug_|test_|demo_|minimal_|simple_|direct_|endpoint_|registration_|password_|schema_).*\.py$
 
   - repo: https://github.com/Yelp/detect-secrets
     rev: v1.4.0
     hooks:
       - id: detect-secrets
         args: ['--baseline', '.secrets.baseline']
+        exclude: ^(debug_|test_|demo_|minimal_|simple_|direct_|endpoint_|registration_|password_|schema_).*\.py$

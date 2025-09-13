@@ -145,14 +145,14 @@
                                             </p>
                                             {% if token.expires_at %}
                                             <p class="card-text">
-                                                <strong>Expires:</strong> 
+                                                <strong>Expires:</strong>
                                                 <span class="{% if token.expires_at < moment() %}text-danger{% else %}text-success{% endif %}">
                                                     {{ token.expires_at.strftime('%Y-%m-%d %H:%M') }}
                                                 </span>
                                             </p>
                                             {% endif %}
                                             <p class="card-text">
-                                                <strong>Last Used:</strong> 
+                                                <strong>Last Used:</strong>
                                                 {% if token.last_used_at %}
                                                     {{ token.last_used_at.strftime('%Y-%m-%d %H:%M') }}
                                                 {% else %}

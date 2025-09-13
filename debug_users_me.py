@@ -18,7 +18,9 @@ os.environ["TESTING"] = "true"
 
 # Test database - use file-based database for tests
 SQLALCHEMY_DATABASE_URL = "sqlite:///debug_users_me.db"
-engine = create_engine(SQLALCHEMY_DATABASE_URL, connect_args={"check_same_thread": False})
+engine = create_engine(
+    SQLALCHEMY_DATABASE_URL, connect_args={"check_same_thread": False}
+)
 TestingSessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 
 
@@ -53,29 +55,29 @@ try:
         email="test@example.com",
         hashed_password=get_password_hash("TestPass123!"),
         is_active=True,
-        is_verified=True
+        is_verified=True,
     )
     db.add(test_user)
     db.commit()
     db.refresh(test_user)
     print(f"✓ Test user created: {test_user.username} (ID: {test_user.id})")
-    
+
     # Create access token
     token = create_access_token({"sub": test_user.username, "user_id": test_user.id})
     print(f"✓ Access token created")
-    
+
     # Test the /users/me endpoint
     print("Testing /users/me endpoint...")
     headers = {"Authorization": f"Bearer {token}"}
     response = client.get("/users/me", headers=headers)
     print(f"Status code: {response.status_code}")
     print(f"Response: {response.text}")
-    
+
     if response.status_code == 200:
         print("✓ /users/me endpoint working!")
     else:
         print("✗ /users/me endpoint failed")
-        
+
 finally:
     next(db_gen)
 

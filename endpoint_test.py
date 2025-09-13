@@ -15,8 +15,11 @@ from app.models import SecurityEvent, User
 
 # Test database - use in-memory database for tests
 SQLALCHEMY_DATABASE_URL = "sqlite:///:memory:"
-engine = create_engine(SQLALCHEMY_DATABASE_URL, connect_args={"check_same_thread": False})
+engine = create_engine(
+    SQLALCHEMY_DATABASE_URL, connect_args={"check_same_thread": False}
+)
 TestingSessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
+
 
 def override_get_db():
     """Override the database dependency for testing."""
@@ -25,6 +28,7 @@ def override_get_db():
         yield db
     finally:
         db.close()
+
 
 # Create all tables
 print("Creating database tables...")
@@ -45,11 +49,14 @@ print(f"Health response: {response.text}")
 
 # Test registration endpoint
 print("Testing registration endpoint...")
-response = client.post("/auth/register", json={
-    "username": "testuser",
-    "email": "test@example.com",
-    "password": "StrongPass123!"
-})
+response = client.post(
+    "/auth/register",
+    json={
+        "username": "testuser",
+        "email": "test@example.com",
+        "password": "StrongPass123!",
+    },
+)
 
 print(f"Registration status: {response.status_code}")
 print(f"Registration response: {response.text}")

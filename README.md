@@ -215,7 +215,7 @@ black . && isort . && black --check . && isort --check-only . && flake8 app/ tes
 
 **Expected Results:**
 - Black: "All done!"
-- isort: "Skipped X files" 
+- isort: "Skipped X files"
 - flake8: Exit code 0 (warnings are OK)
 - pytest: All tests pass
 - Server: Starts without errors

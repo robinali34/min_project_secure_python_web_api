@@ -17,7 +17,9 @@ os.environ["TESTING"] = "true"
 
 # Test database - use file-based database for tests
 SQLALCHEMY_DATABASE_URL = "sqlite:///debug_test.db"
-engine = create_engine(SQLALCHEMY_DATABASE_URL, connect_args={"check_same_thread": False})
+engine = create_engine(
+    SQLALCHEMY_DATABASE_URL, connect_args={"check_same_thread": False}
+)
 TestingSessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 
 
@@ -43,14 +45,17 @@ client = TestClient(app)
 # Test the registration endpoint
 print("Testing registration endpoint...")
 try:
-    response = client.post("/auth/register", json={
-        "username": "testuser",
-        "email": "test@example.com",
-        "password": "StrongPass123!"
-    })
+    response = client.post(
+        "/auth/register",
+        json={
+            "username": "testuser",
+            "email": "test@example.com",
+            "password": "StrongPass123!",
+        },
+    )
     print(f"Status code: {response.status_code}")
     print(f"Response: {response.text}")
-    
+
     if response.status_code == 500:
         print("500 error - checking response details...")
         try:
@@ -58,7 +63,7 @@ try:
             print(f"Error response: {response_json}")
         except:
             print("Could not parse response as JSON")
-            
+
 except Exception as e:
     print(f"Exception occurred: {e}")
     traceback.print_exc()

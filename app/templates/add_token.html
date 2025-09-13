@@ -156,10 +156,10 @@
     document.getElementById('service_name').addEventListener('change', function() {
         const service = this.value;
         const scopeSelect = document.getElementById('scope');
-        
+
         // Clear existing options
         scopeSelect.innerHTML = '<option value="">Select a scope...</option>';
-        
+
         // Add service-specific scopes
         if (service === 'github') {
             scopeSelect.innerHTML += '<option value="read-only">read-only - Read-only access to user data</option>';
@@ -183,13 +183,13 @@
         const serviceName = document.getElementById('service_name').value;
         const accessToken = document.getElementById('access_token').value;
         const scope = document.getElementById('scope').value;
-        
+
         if (!serviceName || !accessToken || !scope) {
             e.preventDefault();
             alert('Please fill in all required fields.');
             return false;
         }
-        
+
         // Basic token format validation
         if (accessToken.length < 10) {
             e.preventDefault();
