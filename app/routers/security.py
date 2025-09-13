@@ -5,6 +5,7 @@ from typing import List
 
 from fastapi import APIRouter, Depends, Query, Request
 from sqlalchemy import desc
+from sqlalchemy import func
 from sqlalchemy.orm import Session
 
 from app.auth import get_current_superuser, get_current_user
@@ -63,7 +64,7 @@ async def get_security_stats(
     event_types = (
         db.query(
             SecurityEvent.event_type,
-            db.func.count(SecurityEvent.id).label("count"),
+            func.count(SecurityEvent.id).label("count"),
         )
         .filter(SecurityEvent.created_at >= since)
         .group_by(SecurityEvent.event_type)
@@ -74,7 +75,7 @@ async def get_security_stats(
     severities = (
         db.query(
             SecurityEvent.severity,
-            db.func.count(SecurityEvent.id).label("count"),
+            func.count(SecurityEvent.id).label("count"),
         )
         .filter(SecurityEvent.created_at >= since)
         .group_by(SecurityEvent.severity)

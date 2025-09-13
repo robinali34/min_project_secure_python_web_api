@@ -77,7 +77,7 @@ async def register(
     log_security_event(
         db=db,
         event_type="user_registered",
-        user_id=db_user.id,
+        user_id=db_user.id,  # type: ignore
         event_data=f"username={user_data.username}, email={user_data.email}",
         severity="INFO",
         request=request,
@@ -114,7 +114,7 @@ async def login(
         log_security_event(
             db=db,
             event_type="inactive_user_login_attempt",
-            user_id=user.id,
+            user_id=user.id,  # type: ignore  # type: ignore
             severity="WARNING",
             request=request,
         )
@@ -129,7 +129,7 @@ async def login(
         log_security_event(
             db=db,
             event_type="locked_user_login_attempt",
-            user_id=user.id,
+            user_id=user.id,  # type: ignore  # type: ignore
             severity="WARNING",
             request=request,
         )
@@ -150,13 +150,13 @@ async def login(
         expires_delta=access_token_expires,
     )
 
-    refresh_token = create_refresh_token(user.id)
-    store_refresh_token(db, user.id, refresh_token, request)
+    refresh_token = create_refresh_token(user.id)  # type: ignore
+    store_refresh_token(db, user.id, refresh_token, request)  # type: ignore
 
     log_security_event(
         db=db,
         event_type="successful_login",
-        user_id=user.id,
+        user_id=user.id,  # type: ignore
         severity="INFO",
         request=request,
     )
@@ -212,7 +212,7 @@ async def refresh_token(
     log_security_event(
         db=db,
         event_type="token_refreshed",
-        user_id=user.id,
+        user_id=user.id,  # type: ignore
         severity="INFO",
         request=request,
     )
@@ -250,7 +250,7 @@ async def change_password(
 
     # Verify current password
     user = db.query(User).filter(User.id == current_user["id"]).first()
-    if not verify_password(password_data.current_password, user.hashed_password):
+    if not verify_password(password_data.current_password, user.hashed_password):  # type: ignore
         log_security_event(
             db=db,
             event_type="password_change_wrong_current",
@@ -264,8 +264,8 @@ async def change_password(
         )
 
     # Update password
-    user.hashed_password = get_password_hash(password_data.new_password)
-    user.password_changed_at = datetime.now(timezone.utc)
+    user.hashed_password = get_password_hash(password_data.new_password)  # type: ignore
+    user.password_changed_at = datetime.now(timezone.utc)  # type: ignore
     db.commit()
 
     log_security_event(

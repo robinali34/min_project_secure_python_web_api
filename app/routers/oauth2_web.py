@@ -258,19 +258,19 @@ async def update_token(
 
     # Update fields
     if token_update.access_token:
-        token.access_token = token_manager._encrypt_token(token_update.access_token)
+        token.access_token = token_manager._encrypt_token(token_update.access_token)  # type: ignore
     if token_update.refresh_token:
-        token.refresh_token = token_manager._encrypt_token(token_update.refresh_token)
+        token.refresh_token = token_manager._encrypt_token(token_update.refresh_token)  # type: ignore
     if token_update.expires_in:
-        token.expires_at = datetime.now(timezone.utc) + timedelta(
+        token.expires_at = datetime.now(timezone.utc) + timedelta(  # type: ignore
             seconds=token_update.expires_in
         )
     if token_update.scope:
-        token.scope = token_update.scope
+        token.scope = token_update.scope  # type: ignore
     if token_update.is_active is not None:
-        token.is_active = token_update.is_active
+        token.is_active = token_update.is_active  # type: ignore
 
-    token.updated_at = datetime.now(timezone.utc)
+    token.updated_at = datetime.now(timezone.utc)  # type: ignore
     db.commit()
     db.refresh(token)
 

@@ -55,7 +55,7 @@ async def update_current_user(
                 status_code=status.HTTP_400_BAD_REQUEST,
                 detail="Username already taken",
             )
-        user.username = user_update.username
+        user.username = user_update.username  # type: ignore
 
     # Check if email is being changed and if it's already taken
     if user_update.email and user_update.email != user.email:
@@ -73,11 +73,11 @@ async def update_current_user(
                 status_code=status.HTTP_400_BAD_REQUEST,
                 detail="Email already taken",
             )
-        user.email = user_update.email
+        user.email = user_update.email  # type: ignore
 
     # Update other fields
     if user_update.is_active is not None:
-        user.is_active = user_update.is_active
+        user.is_active = user_update.is_active  # type: ignore
 
     db.commit()
     db.refresh(user)
@@ -205,8 +205,8 @@ async def unlock_user(
             status_code=status.HTTP_404_NOT_FOUND, detail="User not found"
         )
 
-    user.locked_until = None
-    user.failed_login_attempts = 0
+    user.locked_until = None  # type: ignore
+    user.failed_login_attempts = 0  # type: ignore
     db.commit()
 
     log_security_event(

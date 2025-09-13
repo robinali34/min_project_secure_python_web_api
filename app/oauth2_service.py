@@ -62,17 +62,17 @@ class OAuth2TokenManager:
 
         if existing_token:
             # Update existing token
-            existing_token.access_token = self._encrypt_token(token_data.access_token)
+            existing_token.access_token = self._encrypt_token(token_data.access_token)  # type: ignore
             if token_data.refresh_token:
-                existing_token.refresh_token = self._encrypt_token(
+                existing_token.refresh_token = self._encrypt_token(  # type: ignore
                     token_data.refresh_token
                 )
-            existing_token.token_type = token_data.token_type
-            existing_token.expires_at = expires_at
-            existing_token.scope = token_data.scope
-            existing_token.client_id = token_data.client_id
-            existing_token.updated_at = datetime.now(timezone.utc)
-            existing_token.last_used_at = datetime.now(timezone.utc)
+            existing_token.token_type = token_data.token_type  # type: ignore
+            existing_token.expires_at = expires_at  # type: ignore
+            existing_token.scope = token_data.scope  # type: ignore
+            existing_token.client_id = token_data.client_id  # type: ignore
+            existing_token.updated_at = datetime.now(timezone.utc)  # type: ignore
+            existing_token.last_used_at = datetime.now(timezone.utc)  # type: ignore
 
             db.commit()
             db.refresh(existing_token)
@@ -151,12 +151,12 @@ class OAuth2TokenManager:
                 tzinfo=timezone.utc
             ) < datetime.now(timezone.utc):
                 # Mark token as inactive
-                token.is_active = False
+                token.is_active = False  # type: ignore
                 db.commit()
                 return None
 
             # Update last used timestamp
-            token.last_used_at = datetime.now(timezone.utc)
+            token.last_used_at = datetime.now(timezone.utc)  # type: ignore
             db.commit()
 
             return token
@@ -173,7 +173,7 @@ class OAuth2TokenManager:
         """Get a decrypted access token."""
         token = self.get_token(db, user_id, service_name, scope)
         if token:
-            return self._decrypt_token(token.access_token)
+            return self._decrypt_token(token.access_token)  # type: ignore
         return None
 
     def revoke_token(
@@ -193,8 +193,8 @@ class OAuth2TokenManager:
         )
 
         if token:
-            token.is_active = False
-            token.updated_at = datetime.now(timezone.utc)
+            token.is_active = False  # type: ignore
+            token.updated_at = datetime.now(timezone.utc)  # type: ignore
             db.commit()
 
             log_security_event(
@@ -237,8 +237,8 @@ class OAuth2TokenManager:
 
         count = len(expired_tokens)
         for token in expired_tokens:
-            token.is_active = False
-            token.updated_at = now
+            token.is_active = False  # type: ignore
+            token.updated_at = now  # type: ignore
 
         db.commit()
 

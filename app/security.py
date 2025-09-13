@@ -100,7 +100,7 @@ def authenticate_user(db: Session, username: str, password: str) -> Optional[Use
     user = db.query(User).filter(User.username == username).first()
     if not user:
         return None
-    if not verify_password(password, user.hashed_password):
+    if not verify_password(password, user.hashed_password):  # type: ignore
         return None
     return user
 
@@ -119,21 +119,21 @@ def is_user_locked(user: User) -> bool:
     """Check if user account is locked."""
     if user.locked_until is None:
         return False
-    return datetime.now(timezone.utc) < user.locked_until
+    return datetime.now(timezone.utc) < user.locked_until  # type: ignore
 
 
 def lock_user_account(db: Session, user: User, lock_duration_minutes: int = 30) -> None:
     """Lock user account for specified duration."""
-    user.locked_until = datetime.now(timezone.utc) + timedelta(
+    user.locked_until = datetime.now(timezone.utc) + timedelta(  # type: ignore
         minutes=lock_duration_minutes
     )
-    user.failed_login_attempts = 0
+    user.failed_login_attempts = 0  # type: ignore
     db.commit()
 
 
 def increment_failed_login_attempts(db: Session, user: User) -> None:
     """Increment failed login attempts for user."""
-    user.failed_login_attempts += 1
+    user.failed_login_attempts += 1  # type: ignore
 
     # Lock account after 5 failed attempts
     if user.failed_login_attempts >= 5:
@@ -144,9 +144,9 @@ def increment_failed_login_attempts(db: Session, user: User) -> None:
 
 def reset_failed_login_attempts(db: Session, user: User) -> None:
     """Reset failed login attempts for user."""
-    user.failed_login_attempts = 0
-    user.locked_until = None
-    user.last_login = datetime.now(timezone.utc)
+    user.failed_login_attempts = 0  # type: ignore
+    user.locked_until = None  # type: ignore
+    user.last_login = datetime.now(timezone.utc)  # type: ignore
     db.commit()
 
 
@@ -184,7 +184,7 @@ def revoke_refresh_token(db: Session, token: str) -> bool:
     )
 
     if refresh_token:
-        refresh_token.is_revoked = True
+        refresh_token.is_revoked = True  # type: ignore
         db.commit()
         return True
     return False

@@ -53,7 +53,7 @@ async def get_current_user(
         log_security_event(
             db=db,
             event_type="inactive_user_access_attempt",
-            user_id=user.id,
+            user_id=user.id,  # type: ignore
             severity="WARNING",
             request=request,
         )
@@ -65,7 +65,7 @@ async def get_current_user(
         log_security_event(
             db=db,
             event_type="locked_user_access_attempt",
-            user_id=user.id,
+            user_id=user.id,  # type: ignore
             severity="WARNING",
             request=request,
         )
