@@ -11,13 +11,10 @@ from sqlalchemy.orm import Session
 from app.auth import get_current_user
 from app.database import get_db
 from app.models import OAuth2Token
-from app.oauth2_service import (
-    OAuth2TokenManager,
-    get_available_scopes,
-    get_oauth2_service_config,
-    validate_scope,
-)
-from app.schemas import OAuth2TokenCreate, OAuth2TokenResponse, OAuth2TokenUpdate
+from app.oauth2_service import (OAuth2TokenManager, get_available_scopes,
+                                get_oauth2_service_config, validate_scope)
+from app.schemas import (OAuth2TokenCreate, OAuth2TokenResponse,
+                         OAuth2TokenUpdate)
 from app.security import log_security_event
 
 router = APIRouter(prefix="/oauth", tags=["oauth2-web"])

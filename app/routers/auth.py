@@ -11,16 +11,10 @@ from app.config import settings
 from app.database import get_db
 from app.models import User
 from app.schemas import PasswordChange, Token, UserCreate, UserResponse
-from app.security import (
-    authenticate_user,
-    create_access_token,
-    create_refresh_token,
-    get_password_hash,
-    log_security_event,
-    reset_failed_login_attempts,
-    revoke_refresh_token,
-    store_refresh_token,
-)
+from app.security import (authenticate_user, create_access_token,
+                          create_refresh_token, get_password_hash,
+                          log_security_event, reset_failed_login_attempts,
+                          revoke_refresh_token, store_refresh_token)
 
 router = APIRouter(prefix="/auth", tags=["authentication"])
 
