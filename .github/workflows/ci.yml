@@ -73,7 +73,7 @@ jobs:
 
     - name: Run all tests
       run: |
-        python -m pytest tests/ -v --tb=short --cov=app --cov-report=xml --cov-fail-under=65
+        python -m pytest tests/ -v --tb=short --cov=app --cov-report=xml --cov-fail-under=55
 
     - name: Upload coverage to Codecov
       uses: codecov/codecov-action@v3

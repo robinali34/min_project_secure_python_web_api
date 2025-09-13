@@ -435,8 +435,7 @@ For support and questions:
 If you discover a security vulnerability, please:
 
 1. **DO NOT** create a public issue
-2. Email security details to [security@yourdomain.com]
-3. Use GitHub's private vulnerability reporting feature
+2. Use GitHub's private vulnerability reporting feature
 
 ## Roadmap
 
