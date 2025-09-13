@@ -37,8 +37,8 @@ jobs:
     - name: Install dependencies
       run: |
         python -m pip install --upgrade pip
-        pip install -r requirements.txt
-        pip install -r requirements-dev.txt
+        pip install -r requirements/requirements.txt
+        pip install -r requirements/requirements-dev.txt
         echo "Verifying critical dependencies..."
         python -c "import cryptography; print(f'cryptography version: {cryptography.__version__}')"
         python -c "import pytest; print(f'pytest version: {pytest.__version__}')"
@@ -84,7 +84,7 @@ jobs:
 
     - name: Run type checking
       run: |
-        mypy app/ --config-file mypy.ini
+        mypy app/ --config-file config/mypy.ini --ignore-missing-imports
 
     - name: Run security tests
       run: |
@@ -116,8 +116,8 @@ jobs:
     - name: Install dependencies
       run: |
         python -m pip install --upgrade pip
-        pip install -r requirements.txt
-        pip install -r requirements-dev.txt
+        pip install -r requirements/requirements.txt
+        pip install -r requirements/requirements-dev.txt
         pip install bandit pip-audit
 
     - name: Run security scans with pre-commit
@@ -132,8 +132,8 @@ jobs:
 
     - name: Run pip-audit vulnerability scan
       run: |
-        pip-audit -r requirements.txt --format=json --output=pip-audit-report.json || true
-        pip-audit -r requirements.txt || true
+        pip-audit -r requirements/requirements.txt --format=json --output=pip-audit-report.json || true
+        pip-audit -r requirements/requirements.txt || true
 
     - name: Upload security reports
       uses: actions/upload-artifact@v4

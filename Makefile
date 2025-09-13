@@ -7,8 +7,8 @@ help: ## Show this help message
 	@awk 'BEGIN {FS = ":.*?## "} /^[a-zA-Z_-]+:.*?## / {printf "  %-15s %s\n", $$1, $$2}' $(MAKEFILE_LIST)
 
 install: ## Install dependencies
-	pip install -r requirements.txt
-	pip install -r requirements-dev.txt
+	pip install -r requirements/requirements.txt
+	pip install -r requirements/requirements-dev.txt
 
 install-pre-commit: ## Install pre-commit hooks
 	pre-commit install
@@ -28,22 +28,22 @@ lint: ## Run linting
 
 format: ## Format code
 	black app/ tests/
-	isort app/ tests/
+	isort app/ tests/ --profile black --settings-path config/
 
 format-check: ## Check code formatting
 	black --check app/ tests/
-	isort --check-only app/ tests/
+	isort --check-only app/ tests/ --profile black --settings-path config/
 
 type-check: ## Run type checking
 	mypy app/ --ignore-missing-imports --no-strict-optional
 
 security: ## Run security scans
 	bandit -r app/ -ll
-	pip-audit -r requirements.txt || true
+	pip-audit -r requirements/requirements.txt || true
 
 security-full: ## Run comprehensive security scans
 	bandit -r app/ -ll
-	pip-audit -r requirements.txt || true
+	pip-audit -r requirements/requirements.txt || true
 	semgrep --config=auto app/
 
 clean: ## Clean up temporary files
