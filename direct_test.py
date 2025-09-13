@@ -2,15 +2,17 @@
 """Test endpoint directly without TestClient."""
 
 import os
+
 os.environ["TESTING"] = "true"
 
+from fastapi import Request
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
-from app.database import get_db, Base
-from app.models import User, SecurityEvent
+
+from app.database import Base, get_db
+from app.models import SecurityEvent, User
 from app.routers.auth import register
 from app.schemas import UserCreate
-from fastapi import Request
 
 # Test database - use in-memory database for tests
 SQLALCHEMY_DATABASE_URL = "sqlite:///:memory:"
@@ -79,6 +81,7 @@ async def test_registration():
 
 # Run the async test
 import asyncio
+
 asyncio.run(test_registration())
 
 # Clean up

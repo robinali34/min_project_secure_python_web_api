@@ -2,10 +2,12 @@
 """Simple test to check database session."""
 
 import os
+
 os.environ["TESTING"] = "true"
 
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
+
 from app.database import Base
 from app.models import User
 

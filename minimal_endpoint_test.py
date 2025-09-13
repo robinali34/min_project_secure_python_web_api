@@ -2,14 +2,16 @@
 """Test endpoint with minimal setup."""
 
 import os
+
 os.environ["TESTING"] = "true"
 
 from fastapi.testclient import TestClient
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
+
+from app.database import Base, get_db
 from app.main import app
-from app.database import get_db, Base
-from app.models import User, SecurityEvent
+from app.models import SecurityEvent, User
 
 # Test database - use in-memory database for tests
 SQLALCHEMY_DATABASE_URL = "sqlite:///:memory:"

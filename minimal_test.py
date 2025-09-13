@@ -2,6 +2,7 @@
 """Minimal test to check application setup."""
 
 import os
+
 os.environ["TESTING"] = "true"
 
 # Test imports
@@ -16,8 +17,8 @@ except Exception as e:
 
 # Test database setup
 try:
-    from app.database import get_db, Base
-    from app.models import User, SecurityEvent
+    from app.database import Base, get_db
+    from app.models import SecurityEvent, User
     print("✓ Database imports successful")
 except Exception as e:
     print(f"✗ Database imports failed: {e}")

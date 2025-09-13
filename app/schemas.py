@@ -2,19 +2,22 @@
 
 from datetime import datetime
 from typing import Optional
-from pydantic import BaseModel, EmailStr, field_validator, Field
+
+from pydantic import BaseModel, EmailStr, Field, field_validator
 
 
 class UserBase(BaseModel):
     """Base user schema."""
+
     username: str = Field(..., min_length=3, max_length=50, pattern="^[a-zA-Z0-9_]+$")
     email: EmailStr
 
 
 class UserCreate(UserBase):
     """Schema for user creation."""
+
     password: str = Field(..., min_length=8, max_length=128)
-    
+
     @field_validator("password")
     @classmethod
     def validate_password(cls, v):
@@ -34,13 +37,17 @@ class UserCreate(UserBase):
 
 class UserUpdate(BaseModel):
     """Schema for user updates."""
-    username: Optional[str] = Field(None, min_length=3, max_length=50, pattern="^[a-zA-Z0-9_]+$")
+
+    username: Optional[str] = Field(
+        None, min_length=3, max_length=50, pattern="^[a-zA-Z0-9_]+$"
+    )
     email: Optional[EmailStr] = None
     is_active: Optional[bool] = None
 
 
 class UserResponse(UserBase):
     """Schema for user responses."""
+
     id: int
     is_active: bool
     is_verified: bool
@@ -48,18 +55,20 @@ class UserResponse(UserBase):
     created_at: datetime
     updated_at: datetime
     last_login: Optional[datetime] = None
-    
+
     model_config = {"from_attributes": True}
 
 
 class UserLogin(BaseModel):
     """Schema for user login."""
+
     username: str = Field(..., min_length=1, max_length=50)
     password: str = Field(..., min_length=1, max_length=128)
 
 
 class Token(BaseModel):
     """Schema for access token."""
+
     access_token: str
     token_type: str = "bearer"
     expires_in: int
@@ -67,15 +76,17 @@ class Token(BaseModel):
 
 class TokenData(BaseModel):
     """Schema for token data."""
+
     username: Optional[str] = None
     user_id: Optional[int] = None
 
 
 class PasswordChange(BaseModel):
     """Schema for password change."""
+
     current_password: str = Field(..., min_length=1, max_length=128)
     new_password: str = Field(..., min_length=8, max_length=128)
-    
+
     @field_validator("new_password")
     @classmethod
     def validate_new_password(cls, v):
@@ -95,13 +106,17 @@ class PasswordChange(BaseModel):
 
 class SecurityEventCreate(BaseModel):
     """Schema for security event creation."""
+
     event_type: str = Field(..., min_length=1, max_length=50)
     event_data: Optional[str] = None
-    severity: str = Field(default="INFO", pattern="^(DEBUG|INFO|WARNING|ERROR|CRITICAL)$")
+    severity: str = Field(
+        default="INFO", pattern="^(DEBUG|INFO|WARNING|ERROR|CRITICAL)$"
+    )
 
 
 class SecurityEventResponse(BaseModel):
     """Schema for security event response."""
+
     id: int
     user_id: Optional[int]
     event_type: str
@@ -110,12 +125,13 @@ class SecurityEventResponse(BaseModel):
     user_agent: Optional[str]
     severity: str
     created_at: datetime
-    
+
     model_config = {"from_attributes": True}
 
 
 class OAuth2TokenCreate(BaseModel):
     """Schema for OAuth2 token creation."""
+
     service_name: str = Field(..., min_length=1, max_length=50)
     access_token: str = Field(..., min_length=1)
     refresh_token: Optional[str] = None
@@ -127,6 +143,7 @@ class OAuth2TokenCreate(BaseModel):
 
 class OAuth2TokenUpdate(BaseModel):
     """Schema for OAuth2 token updates."""
+
     access_token: Optional[str] = None
     refresh_token: Optional[str] = None
     expires_in: Optional[int] = None
@@ -136,6 +153,7 @@ class OAuth2TokenUpdate(BaseModel):
 
 class OAuth2TokenResponse(BaseModel):
     """Schema for OAuth2 token response."""
+
     id: int
     user_id: int
     service_name: str
@@ -147,12 +165,13 @@ class OAuth2TokenResponse(BaseModel):
     created_at: datetime
     updated_at: datetime
     last_used_at: Optional[datetime]
-    
+
     model_config = {"from_attributes": True}
 
 
 class OAuth2ServiceConfig(BaseModel):
     """Schema for OAuth2 service configuration."""
+
     service_name: str = Field(..., min_length=1, max_length=50)
     client_id: str = Field(..., min_length=1)
     client_secret: str = Field(..., min_length=1)
@@ -164,6 +183,7 @@ class OAuth2ServiceConfig(BaseModel):
 
 class PasswordEntry(BaseModel):
     """Schema for password entry in web interface."""
+
     password: str = Field(..., min_length=1, max_length=128)
     service_name: str = Field(..., min_length=1, max_length=50)
     remember_me: bool = Field(default=False)

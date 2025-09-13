@@ -2,12 +2,14 @@
 """Test with minimal FastAPI app."""
 
 import os
-from fastapi import FastAPI, Depends
+
+from fastapi import Depends, FastAPI
 from fastapi.testclient import TestClient
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
-from app.database import get_db, Base
-from app.models import User, SecurityEvent
+
+from app.database import Base, get_db
+from app.models import SecurityEvent, User
 from app.routers.auth import register
 from app.schemas import UserCreate
 

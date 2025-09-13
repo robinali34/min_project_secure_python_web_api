@@ -3,12 +3,14 @@
 
 import os
 import traceback
+
 from fastapi.testclient import TestClient
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
+
+from app.database import Base, get_db
 from app.main import app
-from app.database import get_db, Base
-from app.models import User, SecurityEvent
+from app.models import SecurityEvent, User
 
 # Set testing environment variable
 os.environ["TESTING"] = "true"
@@ -67,5 +69,6 @@ app.dependency_overrides.clear()
 
 # Remove the test database file
 import os
+
 if os.path.exists("debug_test.db"):
     os.remove("debug_test.db")

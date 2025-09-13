@@ -2,6 +2,7 @@
 """Test schema validation."""
 
 import os
+
 os.environ["TESTING"] = "true"
 
 try:

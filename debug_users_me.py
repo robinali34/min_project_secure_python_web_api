@@ -3,13 +3,15 @@
 
 import os
 import traceback
+
 from fastapi.testclient import TestClient
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
+
+from app.database import Base, get_db
 from app.main import app
-from app.database import get_db, Base
-from app.models import User, SecurityEvent
-from app.security import get_password_hash, create_access_token
+from app.models import SecurityEvent, User
+from app.security import create_access_token, get_password_hash
 
 # Set testing environment variable
 os.environ["TESTING"] = "true"

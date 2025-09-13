@@ -18,6 +18,32 @@ A secure, production-ready Python web API built with FastAPI, featuring comprehe
 - **Docker Support**: Containerized deployment with Docker
 - **CI/CD Pipeline**: GitHub Actions workflows for testing and deployment
 
+## Quick Reference
+
+**Quick Start:**
+```bash
+# Clone and setup
+git clone <repository-url>
+cd secure_python_web_api
+python -m venv venv
+source venv/bin/activate
+pip install -r requirements.txt
+
+# Run locally
+uvicorn app.main:app --reload
+```
+
+**Pre-push Check:**
+```bash
+# Run all checks before pushing to GitHub
+black . && isort . && black --check . && isort --check-only . && flake8 app/ tests/ --count --exit-zero --max-complexity=10 --max-line-length=127 --statistics && python -m pytest tests/ -v --tb=short
+```
+
+**Development:**
+- [Local Check-up Steps](#local-check-up-steps) - Verify code before pushing
+- [GitHub Actions Troubleshooting](#github-actions-troubleshooting) - Fix CI/CD issues
+- [OAuth2 Web Interface](#oauth2-web-interface) - Token management system
+
 ## Security Features
 
 - **Authentication & Authorization**: JWT-based with refresh token rotation
@@ -148,6 +174,51 @@ make install-pre-commit
 # Run hooks manually
 pre-commit run --all-files
 ```
+
+### Local Check-up Steps
+
+Before pushing code to GitHub, run these commands to ensure your code will pass CI/CD checks:
+
+```bash
+# 1. Format code with Black
+black .
+
+# 2. Sort imports with isort
+isort .
+
+# 3. Check formatting (should show "All done!")
+black --check .
+
+# 4. Check import sorting (should show "Skipped X files")
+isort --check-only .
+
+# 5. Run linting (should exit with code 0)
+flake8 app/ tests/ --count --exit-zero --max-complexity=10 --max-line-length=127 --statistics
+
+# 6. Run tests to ensure everything works
+python -m pytest tests/ -v --tb=short
+
+# 7. Run security tests specifically
+python -m pytest tests/test_security.py -v
+
+# 8. Run OAuth2 tests specifically
+python -m pytest tests/test_oauth2.py -v
+
+# 9. Quick server startup test
+timeout 5s uvicorn app.main:app --host 0.0.0.0 --port 8000 || echo "Server started successfully"
+```
+
+**One-liner for quick check:**
+```bash
+black . && isort . && black --check . && isort --check-only . && flake8 app/ tests/ --count --exit-zero --max-complexity=10 --max-line-length=127 --statistics && python -m pytest tests/ -v --tb=short -x
+```
+
+**Expected Results:**
+- Black: "All done!"
+- isort: "Skipped X files" 
+- flake8: Exit code 0 (warnings are OK)
+- pytest: All tests pass
+- Server: Starts without errors
 
 ## Docker
 
@@ -285,6 +356,51 @@ The project includes comprehensive GitHub Actions workflows:
 - **Docker Build**: Automated Docker image building
 - **Deployment**: Automated deployment to production
 
+### GitHub Actions Troubleshooting
+
+If your GitHub Actions are failing, check these common issues:
+
+**1. Code Formatting Failures:**
+```bash
+# Fix formatting issues
+black .
+isort .
+```
+
+**2. Import Sorting Failures:**
+```bash
+# Fix import order
+isort .
+```
+
+**3. Linting Failures:**
+```bash
+# Check linting issues
+flake8 app/ tests/ --max-line-length=127 --count --statistics
+```
+
+**4. Test Failures:**
+```bash
+# Run tests locally
+python -m pytest tests/ -v --tb=short
+```
+
+**5. Security Scan Failures:**
+```bash
+# Run security tests
+python -m pytest tests/test_security.py -v
+```
+
+**6. Deprecated Actions:**
+- All GitHub Actions are updated to latest versions
+- No deprecated `actions/upload-artifact@v3` or similar
+
+**Quick Fix Command:**
+```bash
+# Run all checks locally before pushing
+black . && isort . && black --check . && isort --check-only . && flake8 app/ tests/ --count --exit-zero --max-complexity=10 --max-line-length=127 --statistics && python -m pytest tests/ -v --tb=short
+```
+
 ## Contributing
 
 1. Fork the repository
@@ -299,7 +415,8 @@ The project includes comprehensive GitHub Actions workflows:
 - Write comprehensive tests
 - Update documentation
 - Ensure security considerations
-- Run all quality checks before submitting
+- **Run all quality checks before submitting** (see [Local Check-up Steps](#local-check-up-steps))
+- Use the provided one-liner command to verify your code locally
 
 ## License
 

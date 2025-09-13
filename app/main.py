@@ -1,19 +1,21 @@
 """Main FastAPI application with security configurations."""
 
-import os
 import logging
-import structlog
+import os
 from contextlib import asynccontextmanager
-from fastapi import FastAPI, Request, HTTPException, status
-from fastapi.responses import JSONResponse
+
+import structlog
+from fastapi import FastAPI, HTTPException, Request, status
 from fastapi.middleware.trustedhost import TrustedHostMiddleware
+from fastapi.responses import JSONResponse
 from slowapi import Limiter, _rate_limit_exceeded_handler
-from slowapi.util import get_remote_address
 from slowapi.errors import RateLimitExceeded
+from slowapi.util import get_remote_address
+
 from app.config import settings
-from app.database import engine, Base
-from app.middleware import setup_cors, setup_security_middleware, setup_rate_limiting
-from app.routers import auth, users, security, oauth2_web
+from app.database import Base, engine
+from app.middleware import setup_cors, setup_rate_limiting, setup_security_middleware
+from app.routers import auth, oauth2_web, security, users
 
 # Configure structured logging
 structlog.configure(
@@ -26,7 +28,7 @@ structlog.configure(
         structlog.processors.StackInfoRenderer(),
         structlog.processors.format_exc_info,
         structlog.processors.UnicodeDecoder(),
-        structlog.processors.JSONRenderer()
+        structlog.processors.JSONRenderer(),
     ],
     context_class=dict,
     logger_factory=structlog.stdlib.LoggerFactory(),
@@ -45,16 +47,16 @@ async def lifespan(app: FastAPI):
     """Application lifespan events."""
     # Startup
     logger.info("Starting up secure Python web API")
-    
+
     # Create database tables (skip in testing environment)
     if not os.getenv("TESTING"):
         Base.metadata.create_all(bind=engine)
         logger.info("Database tables created")
     else:
         logger.info("Skipping database table creation in testing environment")
-    
+
     yield
-    
+
     # Shutdown
     logger.info("Shutting down secure Python web API")
 
@@ -67,7 +69,7 @@ app = FastAPI(
     docs_url="/docs" if settings.environment == "development" else None,
     redoc_url="/redoc" if settings.environment == "development" else None,
     openapi_url="/openapi.json" if settings.environment == "development" else None,
-    lifespan=lifespan
+    lifespan=lifespan,
 )
 
 # Setup middleware
@@ -76,10 +78,7 @@ setup_security_middleware(app)
 setup_rate_limiting(app)
 
 # Add trusted host middleware
-app.add_middleware(
-    TrustedHostMiddleware,
-    allowed_hosts=settings.allowed_hosts
-)
+app.add_middleware(TrustedHostMiddleware, allowed_hosts=settings.allowed_hosts)
 
 # Add rate limiting exception handler
 app.add_exception_handler(RateLimitExceeded, _rate_limit_exceeded_handler)
@@ -95,13 +94,10 @@ async def http_exception_handler(request: Request, exc: HTTPException):
         detail=exc.detail,
         path=request.url.path,
         method=request.method,
-        client_ip=get_remote_address(request)
+        client_ip=get_remote_address(request),
     )
-    
-    return JSONResponse(
-        status_code=exc.status_code,
-        content={"detail": exc.detail}
-    )
+
+    return JSONResponse(status_code=exc.status_code, content={"detail": exc.detail})
 
 
 @app.exception_handler(Exception)
@@ -113,12 +109,12 @@ async def general_exception_handler(request: Request, exc: Exception):
         path=request.url.path,
         method=request.method,
         client_ip=get_remote_address(request),
-        exc_info=True
+        exc_info=True,
     )
-    
+
     return JSONResponse(
         status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-        content={"detail": "Internal server error"}
+        content={"detail": "Internal server error"},
     )
 
 
@@ -129,7 +125,7 @@ async def health_check():
     return {
         "status": "healthy",
         "environment": settings.environment,
-        "version": "1.0.0"
+        "version": "1.0.0",
     }
 
 
@@ -140,7 +136,7 @@ async def root():
     return {
         "message": "Secure Python Web API",
         "version": "1.0.0",
-        "docs": "/docs" if settings.environment == "development" else "disabled"
+        "docs": "/docs" if settings.environment == "development" else "disabled",
     }
 
 
@@ -163,20 +159,17 @@ async def public_endpoint(request: Request):
 @limiter.limit("10/minute")
 async def status_endpoint(request: Request):
     """Status endpoint with rate limiting."""
-    return {
-        "status": "operational",
-        "timestamp": "2024-01-01T00:00:00Z"
-    }
+    return {"status": "operational", "timestamp": "2024-01-01T00:00:00Z"}
 
 
 if __name__ == "__main__":
     import uvicorn
-    
+
     uvicorn.run(
         "app.main:app",
         host="0.0.0.0",
         port=8000,
         reload=settings.environment == "development",
         log_level=settings.log_level.lower(),
-        access_log=True
+        access_log=True,
     )

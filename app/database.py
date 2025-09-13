@@ -1,9 +1,9 @@
 """Database configuration with security best practices."""
 
 from sqlalchemy import create_engine, event
-from sqlalchemy.orm import declarative_base
-from sqlalchemy.orm import sessionmaker
+from sqlalchemy.orm import declarative_base, sessionmaker
 from sqlalchemy.pool import QueuePool
+
 from app.config import settings
 
 # Create database engine with security configurations
@@ -11,10 +11,12 @@ connect_args = {}
 
 # Add database-specific connection arguments
 if "postgresql" in settings.database_url:
-    connect_args.update({
-        "sslmode": "require",  # Force SSL connections
-        "application_name": "secure_python_web_api",
-    })
+    connect_args.update(
+        {
+            "sslmode": "require",  # Force SSL connections
+            "application_name": "secure_python_web_api",
+        }
+    )
 elif "sqlite" in settings.database_url:
     connect_args["check_same_thread"] = False
 
@@ -24,9 +26,9 @@ engine = create_engine(
     pool_size=settings.database_pool_size,
     max_overflow=settings.database_max_overflow,
     pool_pre_ping=True,  # Verify connections before use
-    pool_recycle=3600,   # Recycle connections every hour
+    pool_recycle=3600,  # Recycle connections every hour
     echo=False,  # Set to True for SQL debugging
-    connect_args=connect_args
+    connect_args=connect_args,
 )
 
 # Create session factory

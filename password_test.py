@@ -2,6 +2,7 @@
 """Test password hashing."""
 
 import os
+
 os.environ["TESTING"] = "true"
 
 try:
