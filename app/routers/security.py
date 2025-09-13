@@ -4,8 +4,7 @@ from datetime import datetime, timedelta, timezone
 from typing import List
 
 from fastapi import APIRouter, Depends, Query, Request
-from sqlalchemy import desc
-from sqlalchemy import func
+from sqlalchemy import desc, func
 from sqlalchemy.orm import Session
 
 from app.auth import get_current_superuser, get_current_user
