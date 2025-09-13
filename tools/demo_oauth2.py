@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """Demo script for OAuth2 web interface functionality."""
 
-import requests
+import requests  # type: ignore
 
 # Base URL for the API
 BASE_URL = "http://localhost:8000"
@@ -91,7 +91,7 @@ def demo_oauth2_functionality():
     response = requests.get(f"{BASE_URL}/oauth/tokens", headers=headers)
     if response.status_code == 200:
         tokens = response.json()
-        print(f"Found {len(tokens)} tokens:")
+        print(f"Found {len(tokens)} tokens: ")
         for token in tokens:
             print(
                 f"  - {token['service_name']}: {token['scope']} "
@@ -102,7 +102,9 @@ def demo_oauth2_functionality():
 
     # Step 5: Get a specific token
     print("\n5. Retrieving GitHub token...")
-    response = requests.get(f"{BASE_URL}/oauth/tokens/github", headers=headers)
+    response = requests.get(
+        f"{BASE_URL}/oauth/tokens/github", headers=headers
+    )
     if response.status_code == 200:
         token = response.json()
         print(f"[OK] GitHub token retrieved: {token['scope']} scope")
@@ -131,7 +133,9 @@ def demo_oauth2_functionality():
     }
 
     response = requests.post(
-        f"{BASE_URL}/oauth/password-entry", data=password_data, headers=headers
+        f"{BASE_URL}/oauth/password-entry",
+        data=password_data,
+        headers=headers
     )
     if response.status_code == 200:
         result = response.json()
@@ -167,18 +171,24 @@ def demo_oauth2_functionality():
 
     for endpoint in web_endpoints:
         response = requests.get(f"{BASE_URL}{endpoint}", headers=headers)
-        if response.status_code == 200 and "text/html" in response.headers.get(
-            "content-type", ""
+        if (
+            response.status_code == 200
+            and "text/html" in response.headers.get(
+                "content-type", ""
+            )
         ):
             print(f"[OK] {endpoint} - Web interface accessible")
         else:
             print(
-                f"[ERROR] {endpoint} - Web interface failed: " f"{response.status_code}"
+                f"[ERROR] {endpoint} - Web interface failed: "
+                f"{response.status_code}"
             )
 
     # Step 10: Cleanup - revoke a token
     print("\n10. Revoking Google token...")
-    response = requests.delete(f"{BASE_URL}/oauth/tokens/google", headers=headers)
+    response = requests.delete(
+        f"{BASE_URL}/oauth/tokens/google", headers=headers
+    )
     if response.status_code == 200:
         print("[OK] Google token revoked successfully")
     else:
@@ -199,7 +209,10 @@ if __name__ == "__main__":
         demo_oauth2_functionality()
     except requests.exceptions.ConnectionError:
         print("Error: Could not connect to the server.")
-        print("Please make sure the server is running on http://localhost:8000")
+        print(
+            "Please make sure the server is running on "
+            "http://localhost:8000"
+        )
         print("Start it with: uvicorn app.main:app --reload")
     except Exception as e:
         print(f"Error: {e}")
