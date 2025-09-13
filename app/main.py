@@ -13,7 +13,7 @@ from slowapi.errors import RateLimitExceeded
 from app.config import settings
 from app.database import engine, Base
 from app.middleware import setup_cors, setup_security_middleware, setup_rate_limiting
-from app.routers import auth, users, security
+from app.routers import auth, users, security, oauth2_web
 
 # Configure structured logging
 structlog.configure(
@@ -148,6 +148,7 @@ async def root():
 app.include_router(auth.router)
 app.include_router(users.router)
 app.include_router(security.router)
+app.include_router(oauth2_web.router)
 
 
 # Rate limited endpoints

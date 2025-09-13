@@ -1,0 +1,287 @@
+{% extends "base.html" %}
+
+{% block title %}OAuth2 Dashboard - Token Manager{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-12">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h1><i class="fas fa-tachometer-alt me-2"></i>OAuth2 Token Dashboard</h1>
+            <a href="/oauth/add-token" class="btn btn-primary">
+                <i class="fas fa-plus me-1"></i>Add New Token
+            </a>
+        </div>
+
+        <!-- Statistics Cards -->
+        <div class="row mb-4">
+            <div class="col-md-3">
+                <div class="card bg-primary text-white">
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between">
+                            <div>
+                                <h4>{{ tokens|length }}</h4>
+                                <p class="mb-0">Total Tokens</p>
+                            </div>
+                            <div class="align-self-center">
+                                <i class="fas fa-key fa-2x"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="card bg-success text-white">
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between">
+                            <div>
+                                <h4>{{ tokens|selectattr('is_active')|list|length }}</h4>
+                                <p class="mb-0">Active Tokens</p>
+                            </div>
+                            <div class="align-self-center">
+                                <i class="fas fa-check-circle fa-2x"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="card bg-warning text-white">
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between">
+                            <div>
+                                <h4>{{ tokens|selectattr('expires_at')|list|length }}</h4>
+                                <p class="mb-0">Expiring Soon</p>
+                            </div>
+                            <div class="align-self-center">
+                                <i class="fas fa-clock fa-2x"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="card bg-info text-white">
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between">
+                            <div>
+                                <h4>{{ services|length }}</h4>
+                                <p class="mb-0">Available Services</p>
+                            </div>
+                            <div class="align-self-center">
+                                <i class="fas fa-cloud fa-2x"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Quick Actions -->
+        <div class="row mb-4">
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-header">
+                        <h5 class="mb-0"><i class="fas fa-bolt me-2"></i>Quick Actions</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-md-4">
+                                <a href="/oauth/add-token" class="btn btn-outline-primary w-100 mb-2">
+                                    <i class="fas fa-plus me-2"></i>Add New Token
+                                </a>
+                            </div>
+                            <div class="col-md-4">
+                                <a href="/oauth/password-entry" class="btn btn-outline-success w-100 mb-2">
+                                    <i class="fas fa-key me-2"></i>Access Tokens
+                                </a>
+                            </div>
+                            <div class="col-md-4">
+                                <button class="btn btn-outline-warning w-100 mb-2" onclick="refreshTokens()">
+                                    <i class="fas fa-sync me-2"></i>Refresh All
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Tokens List -->
+        <div class="row">
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-header d-flex justify-content-between align-items-center">
+                        <h5 class="mb-0"><i class="fas fa-list me-2"></i>Your OAuth2 Tokens</h5>
+                        <div class="btn-group" role="group">
+                            <button type="button" class="btn btn-sm btn-outline-secondary" onclick="filterTokens('all')">All</button>
+                            <button type="button" class="btn btn-sm btn-outline-success" onclick="filterTokens('active')">Active</button>
+                            <button type="button" class="btn btn-sm btn-outline-warning" onclick="filterTokens('expired')">Expired</button>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        {% if tokens %}
+                            <div class="row" id="tokens-container">
+                                {% for token in tokens %}
+                                <div class="col-md-6 col-lg-4 mb-3 token-card" data-status="{{ 'active' if token.is_active else 'inactive' }}" data-expires="{{ token.expires_at.isoformat() if token.expires_at else '' }}">
+                                    <div class="card h-100">
+                                        <div class="card-header d-flex justify-content-between align-items-center">
+                                            <h6 class="mb-0">
+                                                <i class="fab fa-{{ token.service_name }} me-1"></i>
+                                                {{ token.service_name.title() }}
+                                            </h6>
+                                            <span class="badge {% if token.is_active %}bg-success{% else %}bg-secondary{% endif %}">
+                                                {% if token.is_active %}Active{% else %}Inactive{% endif %}
+                                            </span>
+                                        </div>
+                                        <div class="card-body">
+                                            <p class="card-text">
+                                                <strong>Scope:</strong>
+                                                {% for scope in token.scope.split() %}
+                                                    <span class="badge bg-primary scope-badge me-1">{{ scope }}</span>
+                                                {% endfor %}
+                                            </p>
+                                            <p class="card-text">
+                                                <strong>Token Type:</strong> {{ token.token_type }}
+                                            </p>
+                                            {% if token.expires_at %}
+                                            <p class="card-text">
+                                                <strong>Expires:</strong> 
+                                                <span class="{% if token.expires_at < moment() %}text-danger{% else %}text-success{% endif %}">
+                                                    {{ token.expires_at.strftime('%Y-%m-%d %H:%M') }}
+                                                </span>
+                                            </p>
+                                            {% endif %}
+                                            <p class="card-text">
+                                                <strong>Last Used:</strong> 
+                                                {% if token.last_used_at %}
+                                                    {{ token.last_used_at.strftime('%Y-%m-%d %H:%M') }}
+                                                {% else %}
+                                                    Never
+                                                {% endif %}
+                                            </p>
+                                        </div>
+                                        <div class="card-footer">
+                                            <div class="btn-group w-100" role="group">
+                                                <button type="button" class="btn btn-sm btn-outline-primary" onclick="viewToken('{{ token.service_name }}')">
+                                                    <i class="fas fa-eye"></i>
+                                                </button>
+                                                <button type="button" class="btn btn-sm btn-outline-success" onclick="copyToken('{{ token.service_name }}')">
+                                                    <i class="fas fa-copy"></i>
+                                                </button>
+                                                <button type="button" class="btn btn-sm btn-outline-warning" onclick="refreshToken('{{ token.service_name }}')">
+                                                    <i class="fas fa-sync"></i>
+                                                </button>
+                                                <button type="button" class="btn btn-sm btn-outline-danger" onclick="revokeToken('{{ token.service_name }}')">
+                                                    <i class="fas fa-trash"></i>
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                {% endfor %}
+                            </div>
+                        {% else %}
+                            <div class="text-center py-5">
+                                <i class="fas fa-key fa-3x text-muted mb-3"></i>
+                                <h5 class="text-muted">No OAuth2 tokens found</h5>
+                                <p class="text-muted">Get started by adding your first OAuth2 token.</p>
+                                <a href="/oauth/add-token" class="btn btn-primary">
+                                    <i class="fas fa-plus me-1"></i>Add Your First Token
+                                </a>
+                            </div>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Available Services -->
+        <div class="row mt-4">
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-header">
+                        <h5 class="mb-0"><i class="fas fa-cloud me-2"></i>Available Services</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="row">
+                            {% for service in services %}
+                            <div class="col-md-4 mb-3">
+                                <div class="card border">
+                                    <div class="card-body text-center">
+                                        <i class="fab fa-{{ service }} fa-2x mb-2"></i>
+                                        <h6>{{ service.title() }}</h6>
+                                        <p class="text-muted small">OAuth2 Provider</p>
+                                        <a href="/oauth/add-token?service={{ service }}" class="btn btn-sm btn-outline-primary">
+                                            <i class="fas fa-plus me-1"></i>Add Token
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                            {% endfor %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    function filterTokens(status) {
+        const cards = document.querySelectorAll('.token-card');
+        cards.forEach(card => {
+            if (status === 'all') {
+                card.style.display = 'block';
+            } else if (status === 'active') {
+                card.style.display = card.dataset.status === 'active' ? 'block' : 'none';
+            } else if (status === 'expired') {
+                const expires = card.dataset.expires;
+                const isExpired = expires && new Date(expires) < new Date();
+                card.style.display = isExpired ? 'block' : 'none';
+            }
+        });
+    }
+
+    function viewToken(serviceName) {
+        window.open(`/oauth/tokens/${serviceName}`, '_blank');
+    }
+
+    function copyToken(serviceName) {
+        fetch(`/oauth/tokens/${serviceName}/decrypted`)
+            .then(response => response.json())
+            .then(data => {
+                copyToClipboard(data.access_token);
+            })
+            .catch(error => {
+                alert('Failed to retrieve token');
+            });
+    }
+
+    function refreshToken(serviceName) {
+        // Implement token refresh logic
+        alert(`Refresh token for ${serviceName} - Feature coming soon!`);
+    }
+
+    function refreshTokens() {
+        // Implement refresh all tokens logic
+        alert('Refresh all tokens - Feature coming soon!');
+    }
+
+    function revokeToken(serviceName) {
+        if (confirmRevoke(serviceName)) {
+            fetch(`/oauth/tokens/${serviceName}`, {
+                method: 'DELETE'
+            })
+            .then(response => response.json())
+            .then(data => {
+                location.reload();
+            })
+            .catch(error => {
+                alert('Failed to revoke token');
+            });
+        }
+    }
+</script>
+{% endblock %}

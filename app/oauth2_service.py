@@ -132,7 +132,7 @@ class OAuth2TokenManager:
         
         if token:
             # Check if token is expired
-            if token.expires_at and token.expires_at < datetime.now(timezone.utc):
+            if token.expires_at and token.expires_at.replace(tzinfo=timezone.utc) < datetime.now(timezone.utc):
                 # Mark token as inactive
                 token.is_active = False
                 db.commit()

@@ -1,0 +1,201 @@
+{% extends "base.html" %}
+
+{% block title %}Add OAuth2 Token - Token Manager{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-8 col-lg-6">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="mb-0"><i class="fas fa-plus me-2"></i>Add New OAuth2 Token</h5>
+            </div>
+            <div class="card-body">
+                <form method="post" action="/oauth/add-token">
+                    <div class="mb-3">
+                        <label for="service_name" class="form-label">Service</label>
+                        <select class="form-select" id="service_name" name="service_name" required>
+                            <option value="">Select a service...</option>
+                            {% for service in services %}
+                            <option value="{{ service }}">{{ service.title() }}</option>
+                            {% endfor %}
+                        </select>
+                        <div class="form-text">Choose the OAuth2 provider for this token.</div>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="access_token" class="form-label">Access Token</label>
+                        <input type="text" class="form-control" id="access_token" name="access_token" required>
+                        <div class="form-text">Enter the OAuth2 access token.</div>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="refresh_token" class="form-label">Refresh Token (Optional)</label>
+                        <input type="text" class="form-control" id="refresh_token" name="refresh_token">
+                        <div class="form-text">Enter the refresh token if available.</div>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="token_type" class="form-label">Token Type</label>
+                        <select class="form-select" id="token_type" name="token_type">
+                            <option value="Bearer" selected>Bearer</option>
+                            <option value="Basic">Basic</option>
+                            <option value="MAC">MAC</option>
+                        </select>
+                        <div class="form-text">Select the token type.</div>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="expires_in" class="form-label">Expires In (Seconds)</label>
+                        <input type="number" class="form-control" id="expires_in" name="expires_in" min="1">
+                        <div class="form-text">Enter expiration time in seconds (optional).</div>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="scope" class="form-label">Scope</label>
+                        <select class="form-select" id="scope" name="scope" required>
+                            <option value="">Select a scope...</option>
+                            {% for scope_key, scope_info in scopes.items() %}
+                            <option value="{{ scope_key }}">{{ scope_key }} - {{ scope_info.description }}</option>
+                            {% endfor %}
+                        </select>
+                        <div class="form-text">Choose the access scope for this token.</div>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="client_id" class="form-label">Client ID (Optional)</label>
+                        <input type="text" class="form-control" id="client_id" name="client_id">
+                        <div class="form-text">Enter the OAuth2 client ID if available.</div>
+                    </div>
+
+                    <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+                        <a href="/oauth/" class="btn btn-secondary me-md-2">Cancel</a>
+                        <button type="submit" class="btn btn-primary">
+                            <i class="fas fa-save me-1"></i>Save Token
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <!-- Help Section -->
+        <div class="card mt-4">
+            <div class="card-header">
+                <h6 class="mb-0"><i class="fas fa-question-circle me-2"></i>How to Get OAuth2 Tokens</h6>
+            </div>
+            <div class="card-body">
+                <div class="accordion" id="helpAccordion">
+                    <div class="accordion-item">
+                        <h2 class="accordion-header" id="githubHelp">
+                            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#githubHelpContent">
+                                <i class="fab fa-github me-2"></i>GitHub
+                            </button>
+                        </h2>
+                        <div id="githubHelpContent" class="accordion-collapse collapse" data-bs-parent="#helpAccordion">
+                            <div class="accordion-body">
+                                <ol>
+                                    <li>Go to GitHub Settings → Developer settings → Personal access tokens</li>
+                                    <li>Click "Generate new token"</li>
+                                    <li>Select the required scopes (read:user, user:email)</li>
+                                    <li>Copy the generated token and paste it above</li>
+                                </ol>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="accordion-item">
+                        <h2 class="accordion-header" id="googleHelp">
+                            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#googleHelpContent">
+                                <i class="fab fa-google me-2"></i>Google
+                            </button>
+                        </h2>
+                        <div id="googleHelpContent" class="accordion-collapse collapse" data-bs-parent="#helpAccordion">
+                            <div class="accordion-body">
+                                <ol>
+                                    <li>Go to Google Cloud Console</li>
+                                    <li>Create a new project or select existing one</li>
+                                    <li>Enable the required APIs</li>
+                                    <li>Create OAuth2 credentials</li>
+                                    <li>Use the OAuth2 flow to get tokens</li>
+                                </ol>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="accordion-item">
+                        <h2 class="accordion-header" id="microsoftHelp">
+                            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#microsoftHelpContent">
+                                <i class="fab fa-microsoft me-2"></i>Microsoft
+                            </button>
+                        </h2>
+                        <div id="microsoftHelpContent" class="accordion-collapse collapse" data-bs-parent="#helpAccordion">
+                            <div class="accordion-body">
+                                <ol>
+                                    <li>Go to Azure Portal</li>
+                                    <li>Register a new application</li>
+                                    <li>Configure OAuth2 settings</li>
+                                    <li>Use the OAuth2 flow to get tokens</li>
+                                </ol>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    // Auto-fill service name from URL parameter
+    const urlParams = new URLSearchParams(window.location.search);
+    const serviceParam = urlParams.get('service');
+    if (serviceParam) {
+        document.getElementById('service_name').value = serviceParam;
+    }
+
+    // Update scope options based on selected service
+    document.getElementById('service_name').addEventListener('change', function() {
+        const service = this.value;
+        const scopeSelect = document.getElementById('scope');
+        
+        // Clear existing options
+        scopeSelect.innerHTML = '<option value="">Select a scope...</option>';
+        
+        // Add service-specific scopes
+        if (service === 'github') {
+            scopeSelect.innerHTML += '<option value="read-only">read-only - Read-only access to user data</option>';
+            scopeSelect.innerHTML += '<option value="profile">profile - Access to user profile information</option>';
+        } else if (service === 'google') {
+            scopeSelect.innerHTML += '<option value="read-only">read-only - Read-only access to user data</option>';
+            scopeSelect.innerHTML += '<option value="profile">profile - Access to user profile information</option>';
+        } else if (service === 'microsoft') {
+            scopeSelect.innerHTML += '<option value="read-only">read-only - Read-only access to user data</option>';
+            scopeSelect.innerHTML += '<option value="profile">profile - Access to user profile information</option>';
+        } else {
+            // Add generic scopes
+            scopeSelect.innerHTML += '<option value="read-only">read-only - Read-only access to user data</option>';
+            scopeSelect.innerHTML += '<option value="profile">profile - Access to user profile information</option>';
+            scopeSelect.innerHTML += '<option value="full">full - Full access to user account</option>';
+        }
+    });
+
+    // Form validation
+    document.querySelector('form').addEventListener('submit', function(e) {
+        const serviceName = document.getElementById('service_name').value;
+        const accessToken = document.getElementById('access_token').value;
+        const scope = document.getElementById('scope').value;
+        
+        if (!serviceName || !accessToken || !scope) {
+            e.preventDefault();
+            alert('Please fill in all required fields.');
+            return false;
+        }
+        
+        // Basic token format validation
+        if (accessToken.length < 10) {
+            e.preventDefault();
+            alert('Access token seems too short. Please check your input.');
+            return false;
+        }
+    });
+</script>
+{% endblock %}

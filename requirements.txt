@@ -23,6 +23,10 @@ secure==0.3.0
 # Rate limiting
 slowapi==0.1.9
 
+# Templates and web interface
+jinja2==3.1.2
+python-multipart==0.0.6
+
 # Logging and monitoring
 structlog==23.2.0
 
