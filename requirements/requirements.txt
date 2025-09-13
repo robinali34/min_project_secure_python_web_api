@@ -1,5 +1,5 @@
 # Core web framework
-fastapi==0.104.1
+fastapi==0.116.1
 uvicorn[standard]==0.24.0
 
 # Database
@@ -8,10 +8,10 @@ psycopg2-binary==2.9.9
 alembic==1.12.1
 
 # Security
-python-jose[cryptography]==3.3.0
+python-jose[cryptography]==3.4.0
 passlib[bcrypt]==1.7.4
 python-multipart==0.0.18
-cryptography==42.0.5
+cryptography==44.0.1
 
 # Validation and serialization
 pydantic==2.5.0
