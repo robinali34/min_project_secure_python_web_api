@@ -83,7 +83,9 @@ class OAuth2TokenManager:
                 db=db,
                 event_type="oauth2_token_updated",
                 user_id=user_id,
-                event_data=f"service={token_data.service_name}, scope={token_data.scope}",
+                event_data=(
+                    f"service={token_data.service_name}, scope={token_data.scope}"
+                ),
                 severity="INFO",
                 request=request,
             )
@@ -115,7 +117,9 @@ class OAuth2TokenManager:
                 db=db,
                 event_type="oauth2_token_created",
                 user_id=user_id,
-                event_data=f"service={token_data.service_name}, scope={token_data.scope}",
+                event_data=(
+                    f"service={token_data.service_name}, scope={token_data.scope}"
+                ),
                 severity="INFO",
                 request=request,
             )
@@ -272,7 +276,9 @@ OAUTH2_SERVICES = {
     "microsoft": {
         "client_id": "",
         "client_secret": "",
-        "authorization_url": "https://login.microsoftonline.com/common/oauth2/v2.0/authorize",
+        "authorization_url": (
+            "https://login.microsoftonline.com/common/oauth2/v2.0/authorize"
+        ),
         "token_url": "https://login.microsoftonline.com/common/oauth2/v2.0/token",
         "scope": "openid profile email",
         "redirect_uri": "http://localhost:8000/oauth/callback/microsoft",

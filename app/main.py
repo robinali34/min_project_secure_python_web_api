@@ -14,7 +14,11 @@ from slowapi.util import get_remote_address
 
 from app.config import settings
 from app.database import Base, engine
-from app.middleware import setup_cors, setup_rate_limiting, setup_security_middleware
+from app.middleware import (
+    setup_cors,
+    setup_rate_limiting,
+    setup_security_middleware,
+)
 from app.routers import auth, oauth2_web, security, users
 
 # Configure structured logging
@@ -64,7 +68,10 @@ async def lifespan(app: FastAPI) -> AsyncGenerator[None, None]:
 # Create FastAPI application
 app = FastAPI(
     title="Secure Python Web API",
-    description="A secure Python web API with PostgreSQL demonstrating security best practices",
+    description=(
+        "A secure Python web API with PostgreSQL demonstrating "
+        "security best practices"
+    ),
     version="1.0.0",
     docs_url="/docs" if settings.environment == "development" else None,
     redoc_url="/redoc" if settings.environment == "development" else None,

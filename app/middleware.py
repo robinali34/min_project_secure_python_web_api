@@ -78,9 +78,9 @@ class SecurityMiddleware(BaseHTTPMiddleware):
             )
 
         # Add security headers manually
-        response.headers[
-            "Strict-Transport-Security"
-        ] = "max-age=31536000; includeSubDomains"
+        response.headers["Strict-Transport-Security"] = (
+            "max-age=31536000; includeSubDomains"
+        )
         response.headers["Referrer-Policy"] = "strict-origin-when-cross-origin"
         response.headers["Content-Security-Policy"] = (
             "default-src 'self'; script-src 'self'; style-src 'self'; "
@@ -118,7 +118,7 @@ class SecurityMiddleware(BaseHTTPMiddleware):
                         event_type="slow_request",
                         event_data=(
                             f"path={request.url.path}, "
-                            f"time={process_time:.2f}s"
+                            f"time={process_time: .2f}s"
                         ),
                         severity="WARNING",
                         request=request,

@@ -135,7 +135,9 @@ async def login(
         )
         raise HTTPException(
             status_code=status.HTTP_423_LOCKED,
-            detail="Account is temporarily locked due to too many failed login attempts",
+            detail=(
+                "Account is temporarily locked due to too many failed login attempts"
+            ),
         )
 
     # Reset failed login attempts on successful login

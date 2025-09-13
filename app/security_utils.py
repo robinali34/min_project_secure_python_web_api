@@ -111,7 +111,7 @@ class SecurityValidator:
 
         # Remove potential SQL injection patterns
         sql_patterns = [
-            r"(\b(SELECT|INSERT|UPDATE|DELETE|DROP|CREATE|ALTER|EXEC|UNION|SCRIPT)\b)",
+            r"(\b(SELECT|INSERT|UPDATE|DELETE|DROP|CREATE|ALTER|EXEC|UNION|SCRIPT)\b)",  # noqa: E501
             r"(\b(OR|AND)\s+\d+\s*=\s*\d+)",
             r"(\b(OR|AND)\s+\w+\s*=\s*\w+)",
             r"(\b(OR|AND)\s+\w+\s*LIKE\s+\w+)",

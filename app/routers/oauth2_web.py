@@ -143,7 +143,9 @@ async def create_token(
     if not validate_scope(token_data.scope, token_data.service_name):
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,
-            detail=f"Invalid scope '{token_data.scope}' for service '{token_data.service_name}'",
+            detail=(
+                f"Invalid scope '{token_data.scope}' for service '{token_data.service_name}'"
+            ),
         )
 
     # Store token
