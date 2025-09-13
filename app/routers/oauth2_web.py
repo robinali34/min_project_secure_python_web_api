@@ -258,9 +258,13 @@ async def update_token(
 
     # Update fields
     if token_update.access_token:
-        token.access_token = token_manager._encrypt_token(token_update.access_token)  # type: ignore
+        token.access_token = token_manager._encrypt_token(  # type: ignore
+            token_update.access_token
+        )
     if token_update.refresh_token:
-        token.refresh_token = token_manager._encrypt_token(token_update.refresh_token)  # type: ignore
+        token.refresh_token = token_manager._encrypt_token(  # type: ignore
+            token_update.refresh_token
+        )
     if token_update.expires_in:
         token.expires_at = datetime.now(timezone.utc) + timedelta(  # type: ignore
             seconds=token_update.expires_in

@@ -250,7 +250,9 @@ async def change_password(
 
     # Verify current password
     user = db.query(User).filter(User.id == current_user["id"]).first()
-    if not verify_password(password_data.current_password, user.hashed_password):  # type: ignore
+    if not verify_password(  # type: ignore
+        password_data.current_password, user.hashed_password
+    ):
         log_security_event(
             db=db,
             event_type="password_change_wrong_current",

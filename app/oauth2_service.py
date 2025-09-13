@@ -62,7 +62,9 @@ class OAuth2TokenManager:
 
         if existing_token:
             # Update existing token
-            existing_token.access_token = self._encrypt_token(token_data.access_token)  # type: ignore
+            existing_token.access_token = self._encrypt_token(  # type: ignore
+                token_data.access_token
+            )
             if token_data.refresh_token:
                 existing_token.refresh_token = self._encrypt_token(  # type: ignore
                     token_data.refresh_token
