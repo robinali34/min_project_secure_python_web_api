@@ -114,7 +114,7 @@ We recommend using the following security tools:
 
 ### Static Analysis
 - **Bandit**: Python security linter
-- **Safety**: Check for known security vulnerabilities in dependencies
+- **pip-audit**: Check for known security vulnerabilities in dependencies
 - **Semgrep**: Static analysis for security issues
 
 ### Dynamic Analysis

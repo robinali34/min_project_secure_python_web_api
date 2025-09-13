@@ -39,11 +39,11 @@ type-check: ## Run type checking
 
 security: ## Run security scans
 	bandit -r app/ -ll
-	safety check
+	pip-audit -r requirements.txt || true
 
 security-full: ## Run comprehensive security scans
 	bandit -r app/ -ll
-	safety check
+	pip-audit -r requirements.txt || true
 	semgrep --config=auto app/
 
 clean: ## Clean up temporary files

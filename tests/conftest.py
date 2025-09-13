@@ -119,7 +119,7 @@ def auth_headers(test_user):
 def superuser_headers(db_session):
     """Create superuser authentication headers."""
     from app.security import create_access_token
-    
+
     # Create a superuser
     superuser = User(
         username="superuser",
@@ -132,6 +132,6 @@ def superuser_headers(db_session):
     db_session.add(superuser)
     db_session.commit()
     db_session.refresh(superuser)
-    
+
     token = create_access_token({"sub": superuser.username, "user_id": superuser.id})
     return {"Authorization": f"Bearer {token}"}
