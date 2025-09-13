@@ -165,9 +165,12 @@ async def status_endpoint(request: Request):
 if __name__ == "__main__":
     import uvicorn
 
+    # Use localhost for development, 0.0.0.0 for production (containerized)
+    host = "127.0.0.1" if settings.environment == "development" else "0.0.0.0"  # nosec B104
+    
     uvicorn.run(
         "app.main:app",
-        host="0.0.0.0",
+        host=host,
         port=8000,
         reload=settings.environment == "development",
         log_level=settings.log_level.lower(),

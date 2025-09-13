@@ -67,7 +67,8 @@ class SecurityMiddleware(BaseHTTPMiddleware):
                             pass
                 except Exception:
                     # If logging fails, just continue
-                    pass
+                    # This is intentional - we don't want logging failures to break the app
+                    pass  # nosec B110
 
             return JSONResponse(
                 status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
@@ -123,7 +124,8 @@ class SecurityMiddleware(BaseHTTPMiddleware):
                         pass
             except Exception:
                 # If logging fails, just continue
-                pass
+                # This is intentional - we don't want logging failures to break the app
+                pass  # nosec B110
 
         return response
 
