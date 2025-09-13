@@ -92,9 +92,11 @@ class OAuth2TokenManager:
                 user_id=user_id,
                 service_name=token_data.service_name,
                 access_token=self._encrypt_token(token_data.access_token),
-                refresh_token=self._encrypt_token(token_data.refresh_token)
-                if token_data.refresh_token
-                else None,
+                refresh_token=(
+                    self._encrypt_token(token_data.refresh_token)
+                    if token_data.refresh_token
+                    else None
+                ),
                 token_type=token_data.token_type,
                 expires_at=expires_at,
                 scope=token_data.scope,

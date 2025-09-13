@@ -65,7 +65,9 @@ def create_refresh_token(user_id: int) -> str:
     return token
 
 
-def verify_token(token: str, token_type: str = "access") -> Optional[TokenData]:  # nosec B107
+def verify_token(
+    token: str, token_type: str = "access"
+) -> Optional[TokenData]:  # nosec B107
     """Verify and decode a JWT token."""
     try:
         payload = jwt.decode(

@@ -166,8 +166,10 @@ if __name__ == "__main__":
     import uvicorn
 
     # Use localhost for development, 0.0.0.0 for production (containerized)
-    host = "127.0.0.1" if settings.environment == "development" else "0.0.0.0"  # nosec B104
-    
+    host = (
+        "127.0.0.1" if settings.environment == "development" else "0.0.0.0"
+    )  # nosec B104
+
     uvicorn.run(
         "app.main:app",
         host=host,
