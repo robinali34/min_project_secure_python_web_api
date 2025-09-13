@@ -14,8 +14,7 @@ from slowapi.util import get_remote_address
 
 from app.config import settings
 from app.database import Base, engine
-from app.middleware import (setup_cors, setup_rate_limiting,
-                            setup_security_middleware)
+from app.middleware import setup_cors, setup_rate_limiting, setup_security_middleware
 from app.routers import auth, oauth2_web, security, users
 
 # Configure structured logging
