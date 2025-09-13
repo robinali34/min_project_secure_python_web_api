@@ -1,14 +1,14 @@
 """Logging configuration for security monitoring."""
 
 import logging
-from typing import Any, Dict
+from typing import Any, Dict, List
 
 import structlog
 
 from app.config import settings
 
 
-def configure_logging():
+def configure_logging() -> None:
     """Configure structured logging for security monitoring."""
 
     # Configure standard library logging
@@ -18,7 +18,7 @@ def configure_logging():
     )
 
     # Configure structlog
-    processors = [
+    processors: List[Any] = [
         structlog.stdlib.filter_by_level,
         structlog.stdlib.add_logger_name,
         structlog.stdlib.add_log_level,
@@ -46,12 +46,12 @@ def configure_logging():
 class SecurityLogger:
     """Security-specific logger with structured logging."""
 
-    def __init__(self):
+    def __init__(self) -> None:
         self.logger = structlog.get_logger("security")
 
     def log_authentication_attempt(
         self, username: str, success: bool, ip_address: str, user_agent: str = None
-    ):
+    ) -> None:
         """Log authentication attempts."""
         self.logger.info(
             "Authentication attempt",
@@ -64,7 +64,7 @@ class SecurityLogger:
 
     def log_authorization_failure(
         self, user_id: int, resource: str, action: str, ip_address: str
-    ):
+    ) -> None:
         """Log authorization failures."""
         self.logger.warning(
             "Authorization failure",
@@ -75,7 +75,7 @@ class SecurityLogger:
             event_type="authorization_failure",
         )
 
-    def log_security_event(self, event_type: str, severity: str, **kwargs):
+    def log_security_event(self, event_type: str, severity: str, **kwargs: Any) -> None:
         """Log general security events."""
         log_level = getattr(logging, severity.upper(), logging.INFO)
         self.logger.log(
@@ -88,7 +88,7 @@ class SecurityLogger:
 
     def log_data_access(
         self, user_id: int, resource_type: str, resource_id: str, action: str
-    ):
+    ) -> None:
         """Log data access events."""
         self.logger.info(
             "Data access",
@@ -101,7 +101,7 @@ class SecurityLogger:
 
     def log_configuration_change(
         self, user_id: int, config_key: str, old_value: Any, new_value: Any
-    ):
+    ) -> None:
         """Log configuration changes."""
         self.logger.warning(
             "Configuration change",

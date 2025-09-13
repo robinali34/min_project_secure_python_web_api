@@ -42,7 +42,7 @@ class Settings(BaseSettings):
 
     @field_validator("secret_key")
     @classmethod
-    def validate_secret_key(cls, v):
+    def validate_secret_key(cls, v: str) -> str:
         """Ensure secret key is strong enough."""
         if len(v) < 32:
             raise ValueError("Secret key must be at least 32 characters long")
@@ -50,7 +50,7 @@ class Settings(BaseSettings):
 
     @field_validator("bcrypt_rounds")
     @classmethod
-    def validate_bcrypt_rounds(cls, v):
+    def validate_bcrypt_rounds(cls, v: int) -> int:
         """Ensure bcrypt rounds are secure."""
         # Allow lower rounds for testing (we'll set environment to test)
         if v < 4:
@@ -59,7 +59,7 @@ class Settings(BaseSettings):
 
     @field_validator("min_password_length")
     @classmethod
-    def validate_min_password_length(cls, v):
+    def validate_min_password_length(cls, v: int) -> int:
         """Ensure minimum password length is reasonable."""
         if v < 8:
             raise ValueError("Minimum password length must be at least 8")

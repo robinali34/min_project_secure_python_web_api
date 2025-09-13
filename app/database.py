@@ -1,13 +1,15 @@
 """Database configuration with security best practices."""
 
+from typing import Any, Dict, Generator
+
 from sqlalchemy import create_engine, event
-from sqlalchemy.orm import declarative_base, sessionmaker
+from sqlalchemy.orm import declarative_base, sessionmaker, Session
 from sqlalchemy.pool import QueuePool
 
 from app.config import settings
 
 # Create database engine with security configurations
-connect_args = {}
+connect_args: Dict[str, Any] = {}
 
 # Add database-specific connection arguments
 if "postgresql" in settings.database_url:
@@ -38,7 +40,7 @@ SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 Base = declarative_base()
 
 
-def get_db():
+def get_db() -> Generator[Session, None, None]:
     """Dependency to get database session."""
     db = SessionLocal()
     try:
@@ -49,7 +51,7 @@ def get_db():
 
 # Security event listeners
 @event.listens_for(engine, "connect")
-def set_sqlite_pragma(dbapi_connection, connection_record):
+def set_sqlite_pragma(dbapi_connection: Any, connection_record: Any) -> None:
     """Set security parameters for PostgreSQL connections."""
     if "postgresql" in settings.database_url:
         with dbapi_connection.cursor() as cursor:

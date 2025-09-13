@@ -3,6 +3,7 @@
 import logging
 import os
 from contextlib import asynccontextmanager
+from typing import AsyncGenerator, Dict
 
 import structlog
 from fastapi import FastAPI, HTTPException, Request, status
@@ -43,7 +44,7 @@ limiter = Limiter(key_func=get_remote_address)
 
 
 @asynccontextmanager
-async def lifespan(app: FastAPI):
+async def lifespan(app: FastAPI) -> AsyncGenerator[None, None]:
     """Application lifespan events."""
     # Startup
     logger.info("Starting up secure Python web API")
@@ -86,7 +87,7 @@ app.add_exception_handler(RateLimitExceeded, _rate_limit_exceeded_handler)
 
 # Global exception handlers
 @app.exception_handler(HTTPException)
-async def http_exception_handler(request: Request, exc: HTTPException):
+async def http_exception_handler(request: Request, exc: HTTPException) -> JSONResponse:
     """Handle HTTP exceptions."""
     logger.warning(
         "HTTP exception",
@@ -101,7 +102,7 @@ async def http_exception_handler(request: Request, exc: HTTPException):
 
 
 @app.exception_handler(Exception)
-async def general_exception_handler(request: Request, exc: Exception):
+async def general_exception_handler(request: Request, exc: Exception) -> JSONResponse:
     """Handle general exceptions."""
     logger.error(
         "Unhandled exception",
@@ -120,7 +121,7 @@ async def general_exception_handler(request: Request, exc: Exception):
 
 # Health check endpoint
 @app.get("/health")
-async def health_check():
+async def health_check() -> Dict[str, str]:
     """Health check endpoint."""
     return {
         "status": "healthy",
@@ -131,7 +132,7 @@ async def health_check():
 
 # Root endpoint
 @app.get("/")
-async def root():
+async def root() -> Dict[str, str]:
     """Root endpoint."""
     return {
         "message": "Secure Python Web API",
@@ -150,14 +151,14 @@ app.include_router(oauth2_web.router)
 # Rate limited endpoints
 @app.get("/api/public")
 @limiter.limit("60/minute")
-async def public_endpoint(request: Request):
+async def public_endpoint(request: Request) -> Dict[str, str]:
     """Public endpoint with rate limiting."""
     return {"message": "This is a public endpoint"}
 
 
 @app.get("/api/status")
 @limiter.limit("10/minute")
-async def status_endpoint(request: Request):
+async def status_endpoint(request: Request) -> Dict[str, str]:
     """Status endpoint with rate limiting."""
     return {"status": "operational", "timestamp": "2024-01-01T00:00:00Z"}
 
@@ -166,9 +167,10 @@ if __name__ == "__main__":
     import uvicorn
 
     # Use localhost for development, 0.0.0.0 for production (containerized)
-    host = (
-        "127.0.0.1" if settings.environment == "development" else "0.0.0.0"
-    )  # nosec B104
+    if settings.environment == "development":
+        host = "127.0.0.1"
+    else:
+        host = "0.0.0.0"  # nosec B104
 
     uvicorn.run(
         "app.main:app",

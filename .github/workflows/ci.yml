@@ -29,15 +29,32 @@ jobs:
         restore-keys: |
           ${{ runner.os }}-pip-
     
+    - name: Install system dependencies
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y build-essential libffi-dev libssl-dev
+    
     - name: Install dependencies
       run: |
         python -m pip install --upgrade pip
         pip install -r requirements.txt
     
+    - name: Debug test discovery
+      run: |
+        echo "Checking test discovery..."
+        python -m pytest --collect-only tests/ || true
+        echo "Checking imports..."
+        python -c "from app.oauth2_service import OAuth2TokenManager; print('OAuth2TokenManager imported successfully')" || true
+        python -c "from cryptography.fernet import Fernet; print('Fernet imported successfully')" || true
+    
     - name: Run linting
       run: |
         flake8 app/ tests/ --count --select=E9,F63,F7,F82 --show-source --statistics
         flake8 app/ tests/ --count --exit-zero --max-complexity=10 --max-line-length=127 --statistics
+    
+    - name: Run type checking
+      run: |
+        mypy app/ --config-file mypy.ini
     
     - name: Run security tests
       run: |
