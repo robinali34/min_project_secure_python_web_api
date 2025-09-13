@@ -15,7 +15,9 @@ class Settings(BaseSettings):
     database_max_overflow: int = 20
 
     # Security Configuration
-    secret_key: str = "test-secret-key-that-is-at-least-32-characters-long-for-testing"
+    secret_key: str = (
+        "test-secret-key-that-is-at-least-32-characters-long-for-testing"
+    )
     algorithm: str = "HS256"
     access_token_expire_minutes: int = 30
     refresh_token_expire_days: int = 7

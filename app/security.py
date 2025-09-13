@@ -63,7 +63,9 @@ def create_refresh_token(user_id: int) -> str:
     )
     token_data.update({"exp": expire})
 
-    token = jwt.encode(token_data, settings.secret_key, algorithm=settings.algorithm)
+    token = jwt.encode(
+        token_data, settings.secret_key, algorithm=settings.algorithm
+    )
     return token
 
 
@@ -95,7 +97,9 @@ def hash_refresh_token(token: str) -> str:
     return hashlib.sha256(token.encode()).hexdigest()
 
 
-def authenticate_user(db: Session, username: str, password: str) -> Optional[User]:
+def authenticate_user(
+    db: Session, username: str, password: str
+) -> Optional[User]:
     """Authenticate a user with username and password."""
     user = db.query(User).filter(User.username == username).first()
     if not user:
@@ -122,7 +126,9 @@ def is_user_locked(user: User) -> bool:
     return datetime.now(timezone.utc) < user.locked_until
 
 
-def lock_user_account(db: Session, user: User, lock_duration_minutes: int = 30) -> None:
+def lock_user_account(
+    db: Session, user: User, lock_duration_minutes: int = 30
+) -> None:
     """Lock user account for specified duration."""
     user.locked_until = datetime.now(timezone.utc) + timedelta(
         minutes=lock_duration_minutes
@@ -193,7 +199,9 @@ def revoke_refresh_token(db: Session, token: str) -> bool:
 def cleanup_expired_tokens(db: Session) -> int:
     """Clean up expired refresh tokens."""
     now = datetime.now(timezone.utc)
-    expired_tokens = db.query(RefreshToken).filter(RefreshToken.expires_at < now).all()
+    expired_tokens = db.query(RefreshToken).filter(
+        RefreshToken.expires_at < now
+    ).all()
 
     for token in expired_tokens:
         db.delete(token)

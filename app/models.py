@@ -28,7 +28,9 @@ class User(Base):
     )
 
     # Audit fields
-    created_at = Column(DateTime(timezone=True), default=func.now(), nullable=False)
+    created_at = Column(
+        DateTime(timezone=True), default=func.now(), nullable=False
+    )
     updated_at = Column(
         DateTime(timezone=True),
         default=func.now(),
@@ -56,7 +58,9 @@ class RefreshToken(Base):
     is_revoked = Column(Boolean, default=False, nullable=False)
 
     # Security fields
-    created_at = Column(DateTime(timezone=True), default=func.now(), nullable=False)
+    created_at = Column(
+        DateTime(timezone=True), default=func.now(), nullable=False
+    )
     last_used_at = Column(DateTime(timezone=True), nullable=True)
     user_agent = Column(Text, nullable=True)
     ip_address = Column(String(45), nullable=True)  # IPv6 compatible
@@ -64,7 +68,9 @@ class RefreshToken(Base):
     # Indexes for cleanup and security
     __table_args__ = (
         Index("idx_refresh_tokens_user_expires", "user_id", "expires_at"),
-        Index("idx_refresh_tokens_expires_revoked", "expires_at", "is_revoked"),
+        Index(
+            "idx_refresh_tokens_expires_revoked", "expires_at", "is_revoked"
+        ),
     )
 
 
@@ -74,7 +80,9 @@ class SecurityEvent(Base):
     __tablename__ = "security_events"
 
     id = Column(Integer, primary_key=True, index=True)
-    user_id = Column(Integer, nullable=True, index=True)  # Nullable for system events
+    user_id = Column(
+        Integer, nullable=True, index=True
+    )  # Nullable for system events
     event_type = Column(String(50), nullable=False, index=True)
     event_data = Column(Text, nullable=True)  # JSON data
     ip_address = Column(String(45), nullable=True)
@@ -89,7 +97,9 @@ class SecurityEvent(Base):
     __table_args__ = (
         Index("idx_security_events_type_created", "event_type", "created_at"),
         Index("idx_security_events_user_created", "user_id", "created_at"),
-        Index("idx_security_events_severity_created", "severity", "created_at"),
+        Index(
+            "idx_security_events_severity_created", "severity", "created_at"
+        ),
     )
 
 
@@ -107,15 +117,21 @@ class OAuth2Token(Base):
     refresh_token = Column(Text, nullable=True)  # Encrypted refresh token
     token_type = Column(String(20), default="Bearer", nullable=False)
     expires_at = Column(DateTime(timezone=True), nullable=True, index=True)
-    scope = Column(String(255), nullable=False, index=True)  # Space-separated scopes
+    scope = Column(
+        String(255), nullable=False, index=True
+    )  # Space-separated scopes
 
     # Additional OAuth2 fields
     client_id = Column(String(255), nullable=True)
-    client_secret_hash = Column(String(255), nullable=True)  # Hashed for security
+    client_secret_hash = Column(
+        String(255), nullable=True
+    )  # Hashed for security
 
     # Security and audit fields
     is_active = Column(Boolean, default=True, nullable=False)
-    created_at = Column(DateTime(timezone=True), default=func.now(), nullable=False)
+    created_at = Column(
+        DateTime(timezone=True), default=func.now(), nullable=False
+    )
     updated_at = Column(
         DateTime(timezone=True),
         default=func.now(),

@@ -79,7 +79,9 @@ class SecurityLogger:
             event_type="authorization_failure",
         )
 
-    def log_security_event(self, event_type: str, severity: str, **kwargs: Any) -> None:
+    def log_security_event(
+        self, event_type: str, severity: str, **kwargs: Any
+    ) -> None:
         """Log general security events."""
         log_level = getattr(logging, severity.upper(), logging.INFO)
         self.logger.log(
