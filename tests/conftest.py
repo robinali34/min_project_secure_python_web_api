@@ -11,7 +11,7 @@ from sqlalchemy.orm import sessionmaker
 
 from app.database import Base, get_db
 from app.main import app
-from app.models import OAuth2Token, SecurityEvent, User
+from app.models import User
 
 # Set testing environment variable
 os.environ["TESTING"] = "true"

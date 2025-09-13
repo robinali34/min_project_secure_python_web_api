@@ -38,6 +38,10 @@ jobs:
       run: |
         python -m pip install --upgrade pip
         pip install -r requirements.txt
+        echo "Verifying critical dependencies..."
+        python -c "import cryptography; print(f'cryptography version: {cryptography.__version__}')"
+        python -c "import pytest; print(f'pytest version: {pytest.__version__}')"
+        python -c "import pytest_cov; print(f'pytest-cov version: {pytest_cov.__version__}')"
     
     - name: Debug test discovery
       run: |
@@ -46,6 +50,13 @@ jobs:
         echo "Checking imports..."
         python -c "from app.oauth2_service import OAuth2TokenManager; print('OAuth2TokenManager imported successfully')" || true
         python -c "from cryptography.fernet import Fernet; print('Fernet imported successfully')" || true
+        echo "Checking OAuth2 test file specifically..."
+        python -c "import tests.test_oauth2; print('OAuth2 test file imported successfully')" || true
+        echo "Checking all test files..."
+        ls -la tests/
+        echo "Checking Python version and packages..."
+        python --version
+        pip list | grep -E "(cryptography|pytest|fastapi)" || true
     
     - name: Run linting
       run: |
@@ -96,8 +107,8 @@ jobs:
     
     - name: Run Safety check
       run: |
-        safety check --json --output safety-report.json || true
-        safety check
+        safety check -r requirements.txt --save-json safety-report.json || true
+        safety check -r requirements.txt
     
     - name: Upload security reports
       uses: actions/upload-artifact@v4

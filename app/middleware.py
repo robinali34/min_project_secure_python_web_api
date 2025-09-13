@@ -1,11 +1,10 @@
 """Security middleware and request processing."""
 
-import os
 import time
 import uuid
 from typing import Callable
 
-from fastapi import HTTPException, Request, Response, status
+from fastapi import Request, Response, status
 from fastapi.responses import JSONResponse
 from slowapi import Limiter, _rate_limit_exceeded_handler
 from slowapi.errors import RateLimitExceeded
@@ -48,7 +47,6 @@ class SecurityMiddleware(BaseHTTPMiddleware):
 
             if not os.getenv("TESTING"):
                 try:
-                    from app.database import get_db
 
                     db_gen = get_db()
                     db = next(db_gen)

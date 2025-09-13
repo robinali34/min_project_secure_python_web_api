@@ -1,16 +1,11 @@
 """Authentication dependencies and utilities."""
 
-from datetime import timedelta
-from typing import Optional
-
 from fastapi import Depends, HTTPException, Request, status
 from fastapi.security import HTTPAuthorizationCredentials, HTTPBearer
 from sqlalchemy.orm import Session
 
 from app.database import get_db
-from app.schemas import TokenData
 from app.security import (
-    get_user_by_id,
     get_user_by_username,
     is_user_locked,
     log_security_event,

@@ -1,6 +1,5 @@
 """OAuth2 web interface for token management."""
 
-import os
 from datetime import datetime, timedelta, timezone
 from typing import List, Optional
 
@@ -11,7 +10,7 @@ from sqlalchemy.orm import Session
 
 from app.auth import get_current_user
 from app.database import get_db
-from app.models import OAuth2Token, User
+from app.models import OAuth2Token
 from app.oauth2_service import (
     OAuth2TokenManager,
     get_available_scopes,
@@ -19,11 +18,9 @@ from app.oauth2_service import (
     validate_scope,
 )
 from app.schemas import (
-    OAuth2ServiceConfig,
     OAuth2TokenCreate,
     OAuth2TokenResponse,
     OAuth2TokenUpdate,
-    PasswordEntry,
 )
 from app.security import log_security_event
 

@@ -1,6 +1,5 @@
 """Main FastAPI application with security configurations."""
 
-import logging
 import os
 from contextlib import asynccontextmanager
 from typing import AsyncGenerator, Dict

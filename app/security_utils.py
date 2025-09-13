@@ -2,7 +2,7 @@
 
 import ipaddress
 import re
-from typing import List, Optional, Union
+from typing import List, Union
 from urllib.parse import urlparse
 
 from fastapi import HTTPException, status

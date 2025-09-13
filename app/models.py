@@ -1,6 +1,5 @@
 """Database models with security considerations."""
 
-from datetime import datetime, timezone
 
 from sqlalchemy import Boolean, Column, DateTime, Index, Integer, String, Text
 from sqlalchemy.sql import func

@@ -86,7 +86,8 @@ class TestInputValidation:
 
     def test_sql_injection_attempt(self, auth_headers, db_session, client):
         """Test SQL injection attempt."""
-        response = client.put("/users/me",
+        response = client.put(
+            "/users/me",
             headers=auth_headers,
             json={
                 "username": "test'; DROP TABLE users; --",
@@ -98,7 +99,8 @@ class TestInputValidation:
 
     def test_xss_attempt(self, auth_headers, db_session, client):
         """Test XSS attempt."""
-        response = client.put("/users/me",
+        response = client.put(
+            "/users/me",
             headers=auth_headers,
             json={
                 "username": "<script>alert('xss')</script>",
@@ -110,7 +112,8 @@ class TestInputValidation:
 
     def test_email_validation(self, auth_headers, db_session, client):
         """Test email validation."""
-        response = client.put("/users/me",
+        response = client.put(
+            "/users/me",
             headers=auth_headers,
             json={
                 "username": "testuser",

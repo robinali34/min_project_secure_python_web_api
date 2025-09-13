@@ -10,14 +10,12 @@ from app.auth import get_current_user
 from app.config import settings
 from app.database import get_db
 from app.models import User
-from app.schemas import PasswordChange, Token, UserCreate, UserLogin, UserResponse
+from app.schemas import PasswordChange, Token, UserCreate, UserResponse
 from app.security import (
     authenticate_user,
     create_access_token,
     create_refresh_token,
-    get_client_ip,
     get_password_hash,
-    increment_failed_login_attempts,
     log_security_event,
     reset_failed_login_attempts,
     revoke_refresh_token,

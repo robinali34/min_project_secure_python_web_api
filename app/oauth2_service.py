@@ -1,7 +1,5 @@
 """OAuth2 service utilities for token management and caching."""
 
-import json
-import secrets
 from datetime import datetime, timedelta, timezone
 from typing import Any, Dict, List, Optional
 
@@ -9,9 +7,8 @@ from cryptography.fernet import Fernet
 from sqlalchemy import and_
 from sqlalchemy.orm import Session
 
-from app.config import settings
-from app.models import OAuth2Token, User
-from app.schemas import OAuth2TokenCreate, OAuth2TokenUpdate
+from app.models import OAuth2Token
+from app.schemas import OAuth2TokenCreate
 from app.security import log_security_event
 
 

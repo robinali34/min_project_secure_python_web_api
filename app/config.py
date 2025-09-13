@@ -1,7 +1,6 @@
 """Configuration management with security best practices."""
 
-import os
-from typing import List, Optional
+from typing import List
 
 from pydantic import field_validator
 from pydantic_settings import BaseSettings

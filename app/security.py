@@ -5,13 +5,13 @@ import secrets
 from datetime import datetime, timedelta, timezone
 from typing import Any, Dict, Optional
 
-from fastapi import HTTPException, Request, status
+from fastapi import Request
 from jose import JWTError, jwt
 from passlib.context import CryptContext
 from sqlalchemy.orm import Session
 
 from app.config import settings
-from app.models import RefreshToken, SecurityEvent, User
+from app.models import RefreshToken, User
 from app.schemas import TokenData
 
 # Password hashing context

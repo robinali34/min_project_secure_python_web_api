@@ -35,8 +35,8 @@ jobs:
     - name: Run Safety check for known vulnerabilities
       run: |
         echo "Running Safety check..."
-        safety scan --json --output safety-report.json || true
-        safety scan
+        safety check -r requirements.txt --save-json safety-report.json || true
+        safety check -r requirements.txt
     
     - name: Run Semgrep security scan
       run: |
