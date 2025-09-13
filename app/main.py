@@ -68,9 +68,9 @@ app = FastAPI(
     version="1.0.0",
     docs_url="/docs" if settings.environment == "development" else None,
     redoc_url="/redoc" if settings.environment == "development" else None,
-    openapi_url="/openapi.json"
-    if settings.environment == "development"
-    else None,
+    openapi_url=(
+        "/openapi.json" if settings.environment == "development" else None
+    ),
     lifespan=lifespan,
 )
 
@@ -144,9 +144,9 @@ async def root() -> Dict[str, str]:
     return {
         "message": "Secure Python Web API",
         "version": "1.0.0",
-        "docs": "/docs"
-        if settings.environment == "development"
-        else "disabled",
+        "docs": (
+            "/docs" if settings.environment == "development" else "disabled"
+        ),
     }
 
 
