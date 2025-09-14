@@ -50,7 +50,7 @@ jobs:
 
     - name: Run MyPy type checking
       run: |
-        mypy app/ --ignore-missing-imports --no-strict-optional
+        mypy app/ --config-file config/mypy.ini --ignore-missing-imports
 
     - name: Run Pre-commit hooks
       run: |

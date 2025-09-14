@@ -84,7 +84,9 @@ setup_rate_limiting(app)
 app.add_middleware(TrustedHostMiddleware, allowed_hosts=settings.allowed_hosts)
 
 # Add rate limiting exception handler
-app.add_exception_handler(RateLimitExceeded, _rate_limit_exceeded_handler)
+app.add_exception_handler(
+    RateLimitExceeded, _rate_limit_exceeded_handler
+)  # type: ignore
 
 
 # Global exception handlers
